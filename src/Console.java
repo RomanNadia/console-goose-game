@@ -67,7 +67,7 @@ public class Console {
         String input = scanner.nextLine();
 
         if(input.equals("1")) {
-            goose.feedGoose(5);
+            goose.feedGoose(10);
         } else if(input.equals("2")) {
 
         } else if(input.equals("3")) {
@@ -80,7 +80,6 @@ public class Console {
             return false;
         } else {
             System.out.println("Please try again: ");
-            input = scanner.nextLine();
         }
         return true;
     }
