@@ -13,6 +13,8 @@ public class Goose {
     private int maxHealth;
     private int currentHealth;
 
+    public Goose() {
+    }
 
     public Goose(String name, int max_hunger, int current_hunger, int max_hygiene, int current_hygiene,
                  int max_satisfaction, int current_satisfaction, int max_health, int current_health) {
@@ -35,12 +37,15 @@ public class Goose {
                 "\n health:" + currentHealth + "/" + maxHealth;
     }
 
-    public void feedGoose(Goose goose, int nutrition) { //Food
-        int newCurrentHunger = goose.getCurrentHunger() + nutrition;
-        if (newCurrentHunger > goose.getMaxHunger())
-            newCurrentHunger = goose.getMaxHunger();
-        goose.setCurrentHunger(newCurrentHunger);
-        System.out.println("Goose was fed. \n a description: " + goose.toString());
+    public void feedGoose(int nutrition) { //Food
+        int newCurrentHunger = currentHunger + nutrition;
+        if (newCurrentHunger > maxHunger)
+            newCurrentHunger = maxHunger;
+        System.out.println("Goose was fed. \n A description: " + toString());
+    }
+
+    public void starve() {
+
     }
 
     public String getName() {
