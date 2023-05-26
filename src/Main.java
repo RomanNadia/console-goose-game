@@ -2,10 +2,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        final int max_hunger = 50;
-        final int max_hygiene = 50;
-        final int max_satisfaction = 50;
-        final int max_health = 50; //maybe it should be in goose class?
+        final int MAX_HUNGER = 50;
+        final int MAX_HYGIENE = 50;
+        final int MAX_SATISFACTION = 50;
+        final int MAX_HEALTH = 50; //maybe it should be in goose class?
         
         Scanner scanner = new Scanner(System.in);
 
@@ -19,17 +19,17 @@ public class Main {
             System.out.println("Happy user, do you want default characteristics or custom: \n 1 - default \n 2 - custom");
             String input_2 = scanner.nextLine();
             if(input_2.equals("1")) {
-                Goose goose = new Goose(inp_name, max_hunger, max_hunger, max_hygiene, max_hygiene, max_satisfaction,
-                        max_satisfaction, max_health, max_health);
+                Goose goose = new Goose(inp_name, MAX_HUNGER, MAX_HUNGER, MAX_HYGIENE, MAX_HYGIENE, MAX_SATISFACTION,
+                        MAX_SATISFACTION, MAX_HEALTH, MAX_HEALTH);
                 System.out.println("Goose is created! \n A description: " + goose.toString());
             } else if(input_2.equals("2")) {
                 System.out.println("Enter max_hunger: ");
                 String custom_max_hunger = scanner.nextLine();
-                System.out.println("Enter max_hygiene: ");
+                System.out.println("Enter MAX_HYGIENE: ");
                 String custom_max_hygiene = scanner.nextLine();
-                System.out.println("Enter max_satisfaction: ");
+                System.out.println("Enter MAX_SATISFACTION: ");
                 String custom_max_satisfaction = scanner.nextLine();
-                System.out.println("Enter max_health: ");
+                System.out.println("Enter MAX_HEALTH: ");
                 String custom_max_health = scanner.nextLine();
                 Goose goose = new Goose(inp_name, Integer.parseInt(custom_max_hunger), Integer.parseInt(custom_max_hunger),
                         Integer.parseInt(custom_max_hygiene), Integer.parseInt(custom_max_hygiene),
@@ -51,8 +51,7 @@ public class Main {
             input_1 = scanner.nextLine();
         }
 
-
-        User_action user_action = new User_action();
+        
 
         while (true) {
             System.out.println("Hello, happy user, please choose an action: \n 1 - feed goose \n 2 - wash goose " +

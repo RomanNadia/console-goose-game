@@ -1,38 +1,46 @@
 public class Goose {
     private String name;
 
-    private int max_hunger;
-    private int current_hunger;
+    private int maxHunger;
+    private int currentHunger;
 
-    private int max_hygiene;
-    private int current_hygiene;
+    private int maxHygiene;
+    private int currentHygiene;
 
-    private int max_satisfaction;
-    private int current_satisfaction;
+    private int maxSatisfaction;
+    private int currentSatisfaction;
 
-    private int max_health;
-    private int current_health;
+    private int maxHealth;
+    private int currentHealth;
 
 
     public Goose(String name, int max_hunger, int current_hunger, int max_hygiene, int current_hygiene,
                  int max_satisfaction, int current_satisfaction, int max_health, int current_health) {
         this.name = name;
-        this.max_hunger = max_hunger;
-        this.current_hunger = current_hunger;
-        this.max_hygiene = max_hygiene;
-        this.current_hygiene = current_hygiene;
-        this.max_satisfaction = max_satisfaction;
-        this.current_satisfaction = current_satisfaction;
-        this.max_health = max_health;
-        this.current_health = current_health;
+        this.maxHunger = max_hunger;
+        this.currentHunger = current_hunger;
+        this.maxHygiene = max_hygiene;
+        this.currentHygiene = current_hygiene;
+        this.maxSatisfaction = max_satisfaction;
+        this.currentSatisfaction = current_satisfaction;
+        this.maxHealth = max_health;
+        this.currentHealth = current_health;
     }
 
     @Override
     public String toString() {
-        return "\n Goose " + name + "\n hunger:" + current_hunger + "/" + max_hunger +
-                "\n hygiene:" + current_hygiene + "/" + max_hygiene +
-                "\n satisfaction:" + current_satisfaction + "/" + max_satisfaction +
-                "\n health:" + current_health + "/" + max_health;
+        return "\n Goose " + name + "\n hunger:" + currentHunger + "/" + maxHunger +
+                "\n hygiene:" + currentHygiene + "/" + maxHygiene +
+                "\n satisfaction:" + currentSatisfaction + "/" + maxSatisfaction +
+                "\n health:" + currentHealth + "/" + maxHealth;
+    }
+
+    public void feedGoose(Goose goose, int nutrition) { //Food
+        int newCurrentHunger = goose.getCurrentHunger() + nutrition;
+        if (newCurrentHunger > goose.getMaxHunger())
+            newCurrentHunger = goose.getMaxHunger();
+        goose.setCurrentHunger(newCurrentHunger);
+        System.out.println("Goose was fed. \n a description: " + goose.toString());
     }
 
     public String getName() {
@@ -43,67 +51,67 @@ public class Goose {
         this.name = name;
     }
 
-    public int getMax_hunger() {
-        return max_hunger;
+    public int getMaxHunger() {
+        return maxHunger;
     }
 
-    public void setMax_hunger(int max_hunger) {
-        this.max_hunger = max_hunger;
+    public void setMaxHunger(int maxHunger) {
+        this.maxHunger = maxHunger;
     }
 
-    public int getCurrent_hunger() {
-        return current_hunger;
+    public int getCurrentHunger() {
+        return currentHunger;
     }
 
-    public void setCurrent_hunger(int current_hunger) {
-        this.current_hunger = current_hunger;
+    public void setCurrentHunger(int currentHunger) {
+        this.currentHunger = currentHunger;
     }
 
-    public int getMax_hygiene() {
-        return max_hygiene;
+    public int getMaxHygiene() {
+        return maxHygiene;
     }
 
-    public void setMax_hygiene(int max_hygiene) {
-        this.max_hygiene = max_hygiene;
+    public void setMaxHygiene(int maxHygiene) {
+        this.maxHygiene = maxHygiene;
     }
 
-    public int getCurrent_hygiene() {
-        return current_hygiene;
+    public int getCurrentHygiene() {
+        return currentHygiene;
     }
 
-    public void setCurrent_hygiene(int current_hygiene) {
-        this.current_hygiene = current_hygiene;
+    public void setCurrentHygiene(int currentHygiene) {
+        this.currentHygiene = currentHygiene;
     }
 
-    public int getMax_satisfaction() {
-        return max_satisfaction;
+    public int getMaxSatisfaction() {
+        return maxSatisfaction;
     }
 
-    public void setMax_satisfaction(int max_satisfaction) {
-        this.max_satisfaction = max_satisfaction;
+    public void setMaxSatisfaction(int maxSatisfaction) {
+        this.maxSatisfaction = maxSatisfaction;
     }
 
-    public int getCurrent_satisfaction() {
-        return current_satisfaction;
+    public int getCurrentSatisfaction() {
+        return currentSatisfaction;
     }
 
-    public void setCurrent_satisfaction(int current_satisfaction) {
-        this.current_satisfaction = current_satisfaction;
+    public void setCurrentSatisfaction(int currentSatisfaction) {
+        this.currentSatisfaction = currentSatisfaction;
     }
 
-    public int getMax_health() {
-        return max_health;
+    public int getMaxHealth() {
+        return maxHealth;
     }
 
-    public void setMax_health(int max_health) {
-        this.max_health = max_health;
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
     }
 
-    public int getCurrent_health() {
-        return current_health;
+    public int getCurrentHealth() {
+        return currentHealth;
     }
 
-    public void setCurrent_health(int current_health) {
-        this.current_health = current_health;
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
     }
 }
