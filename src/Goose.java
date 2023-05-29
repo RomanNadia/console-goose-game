@@ -1,6 +1,7 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Goose {
     private String name;
@@ -41,20 +42,28 @@ public class Goose {
                 "\n health:" + currentHealth + "/" + maxHealth;
     }
 
-    public void feedGoose(int nutrition) { //Food
-        int newCurrentHunger = currentHunger + nutrition;
+    public void feedGoose(Food food) {
+        int newCurrentHunger = currentHunger + food.getNutrition();
         if (newCurrentHunger > maxHunger)
             newCurrentHunger = maxHunger;
         currentHunger = newCurrentHunger;
+        //update?
         System.out.println("Goose was fed. \n A description: " + toString());
     }
 
-    public void starve() {
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-//        LocalDateTime now = LocalDateTime.now();
-//
-//        Duration duration = Duration.between(startDate, now);
-        currentHunger = currentHealth - 5;
+    public void updateCharacteristics(long timeMilli) {
+        starve(timeMilli);
+        //gigiene satisfaction
+    }
+
+    private void starve(long timeMilli) {
+        Date date = new Date();
+        long timeMilliNow = date.getTime();
+        currentHunger = (int)((long)currentHealth - (((timeMilliNow - timeMilli)/10000) * 5));
+        if(currentHunger <= 0) {
+            currentHunger = 0;
+            //shrink health
+        }
     }
 
     public String getName() {

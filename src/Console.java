@@ -67,7 +67,8 @@ public class Console {
         String input = scanner.nextLine();
 
         if(input.equals("1")) {
-            goose.feedGoose(10);
+            Food.FoodAmount foodAmount = new Food.FoodAmount();
+            goose.feedGoose(); //get list obj?
         } else if(input.equals("2")) {
 
         } else if(input.equals("3")) {
