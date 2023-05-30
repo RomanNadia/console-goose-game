@@ -1,10 +1,18 @@
+package com.goose.concole.work;
+
+import java.sql.ResultSet;
 import java.util.Scanner;
+
+import com.goose.conection.bd.DBConection;
+import com.goose.conection.bd.dao.FoodDao;
+import com.goose.models.Food;
+import com.goose.models.Goose;
 
 public class Console {
     final int MAX_HUNGER = 50;
     final int MAX_HYGIENE = 50;
     final int MAX_SATISFACTION = 50;
-    final int MAX_HEALTH = 50; //maybe it should be in goose class?
+    final int MAX_HEALTH = 50; //!!!
 
     public Console() {
     }
@@ -60,30 +68,57 @@ public class Console {
         return goose;
     }
 
-    public boolean chooseAction(Goose goose) {
+    public Action chooseAction(Goose goose) {
         Scanner scanner = new Scanner(System.in);
+
         System.out.println("Hello, happy user, please choose an action: \n 1 - feed goose \n 2 - wash goose " +
                 "\n 3 - interact with goose \n 4 - choose hat for goose \n 5 - check goose state \n 6 - stop program");
         String input = scanner.nextLine();
 
-        if(input.equals("1")) {
-            Food.FoodAmount foodAmount = new Food.FoodAmount();
-            goose.feedGoose(); //get list obj?
-        } else if(input.equals("2")) {
+        Action action = new Action(input);
 
-        } else if(input.equals("3")) {
+        try {
+            if (input.equals("1")) {
+                FoodDao foodDao = new FoodDao();
+                action.setAdditionalAttribute(chooseFood(foodDao.getFood()));
+                return action;
+            } else if (input.equals("2")) {
 
-        } else if(input.equals("4")) {
+            } else if (input.equals("3")) {
 
-        } else if(input.equals("5")) {
-            System.out.println(goose.toString());
-        } else if(input.equals("6")) {
-            return false;
-        } else {
-            System.out.println("Please try again: ");
+            } else if (input.equals("4")) {
+
+            } else if (input.equals("5")) {
+                System.out.println(goose.toString());
+            } else if (input.equals("6")) {
+
+            } else {
+                System.out.println("Please try again: ");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        return true;
+        return action;
     }
+
+
+    public String chooseFood(ResultSet rs) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+
+        int i = 1;
+
+        System.out.println("Hello, happy user, please choose a food:");
+        while (rs.next()) {
+            String foodName = rs.getString("foodName");
+            System.out.println("\n" + i + " - " + foodName);
+            i++;
+        }
+
+        String input = scanner.nextLine();
+        return input;
+    }
+
+
 
 
 }
