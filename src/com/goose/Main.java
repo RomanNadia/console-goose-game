@@ -1,3 +1,4 @@
+package com.goose;
 
 import com.goose.concole.work.Action;
 import com.goose.models.Goose;
@@ -11,7 +12,7 @@ import com.goose.concole.work.Console;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
 
         try {

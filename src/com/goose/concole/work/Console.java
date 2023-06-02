@@ -3,16 +3,12 @@ package com.goose.concole.work;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-import com.goose.conection.bd.DBConection;
 import com.goose.conection.bd.dao.FoodDao;
-import com.goose.models.Food;
+import com.goose.config.GooseConfig;
 import com.goose.models.Goose;
 
 public class Console {
-    final int MAX_HUNGER = 50;
-    final int MAX_HYGIENE = 50;
-    final int MAX_SATISFACTION = 50;
-    final int MAX_HEALTH = 50; //!!!
+
 
     public Console() {
     }
@@ -31,8 +27,11 @@ public class Console {
             System.out.println("Happy user, do you want default characteristics or custom: \n 1 - default \n 2 - custom");
             String input2 = scanner.nextLine();
             if(input2.equals("1")) {
-                goose = new Goose(inp_name, MAX_HUNGER, MAX_HUNGER, MAX_HYGIENE, MAX_HYGIENE, MAX_SATISFACTION,
-                        MAX_SATISFACTION, MAX_HEALTH, MAX_HEALTH);
+                GooseConfig gc = new GooseConfig();
+//                goose = new Goose(inp_name, gc.getMAX_HUNGER(), gc.getMAX_HUNGER(), gc.getMAX_HYGIENE(),
+//                        gc.getMAX_HYGIENE(), gc.getMAX_SATISFACTION(), gc.getMAX_SATISFACTION(),
+//                        gc.getMAX_HEALTH(), gc.getMAX_HEALTH());
+                ////!!!!
                 System.out.println("Goose is created! \n A description: " + goose.toString());
                 return goose;
             } else if(input2.equals("2")) {
@@ -68,7 +67,7 @@ public class Console {
         return goose;
     }
 
-    public Action chooseAction(Goose goose) {
+    public Action chooseAction(Goose goose) throws Exception{
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Hello, happy user, please choose an action: \n 1 - feed goose \n 2 - wash goose " +
@@ -77,7 +76,7 @@ public class Console {
 
         Action action = new Action(input);
 
-        try {
+ //       try {
             if (input.equals("1")) {
                 FoodDao foodDao = new FoodDao();
                 action.setAdditionalAttribute(chooseFood(foodDao.getFood()));
@@ -95,9 +94,9 @@ public class Console {
             } else {
                 System.out.println("Please try again: ");
             }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
         return action;
     }
 
@@ -110,7 +109,7 @@ public class Console {
         System.out.println("Hello, happy user, please choose a food:");
         while (rs.next()) {
             String foodName = rs.getString("foodName");
-            System.out.println("\n" + i + " - " + foodName);
+            System.out.println("\n" + i + " - " + foodName); //id!!!
             i++;
         }
 

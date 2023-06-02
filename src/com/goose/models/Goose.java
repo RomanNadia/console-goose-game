@@ -20,6 +20,7 @@ public class Goose {
     private int maxHealth;
     private int currentHealth;
 
+
     public Goose() {
     }
 

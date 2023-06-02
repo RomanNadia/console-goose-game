@@ -1,19 +1,21 @@
 package com.goose.conection.bd.dao;
 
-import com.goose.conection.bd.DBConection;
+import com.goose.conection.bd.ConectionCreator;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 public class FoodDao {
 
-    public ResultSet getFood() throws Exception{
-        DBConection dbConection = new DBConection();
-        Connection con = dbConection.getConnection();
+    private Connection connection;
 
-        Statement stmt = con.createStatement(); // чи краще перекидатись цим обєктом?
+    public FoodDao() throws Exception {
+        this.connection = ConectionCreator.getConnection();;
+    }
+
+    public ResultSet getFood() throws Exception {
+        Statement stmt = connection.createStatement(); // чи краще перекидатись цим обєктом?
         ResultSet rs = stmt.executeQuery("SELECT foodName FROM food");
         return rs;
     }
