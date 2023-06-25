@@ -8,7 +8,7 @@ import java.util.Properties;
 public class ConectionCreator {
     private static String url = "jdbc:mysql://localhost:3306/gooseGame";
 
-    public static Connection getConnection() throws Exception {
+    public static Connection getConnection() throws SQLException, ClassNotFoundException {
 
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con = DriverManager.getConnection(url,"root","7985");

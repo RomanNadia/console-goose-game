@@ -1,10 +1,16 @@
 package com.goose.concole.work;
 
-import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Scanner;
 
+import com.goose.concole.work.actions.Action;
+import com.goose.concole.work.actions.FeedingAction;
+import com.goose.conection.bd.dao.DetergentDao;
 import com.goose.conection.bd.dao.FoodDao;
+import com.goose.conection.bd.dao.GooseDao;
 import com.goose.config.GooseConfig;
+import com.goose.models.Food;
 import com.goose.models.Goose;
 
 public class Console {
@@ -28,10 +34,9 @@ public class Console {
             String input2 = scanner.nextLine();
             if(input2.equals("1")) {
                 GooseConfig gc = new GooseConfig();
-//                goose = new Goose(inp_name, gc.getMAX_HUNGER(), gc.getMAX_HUNGER(), gc.getMAX_HYGIENE(),
-//                        gc.getMAX_HYGIENE(), gc.getMAX_SATISFACTION(), gc.getMAX_SATISFACTION(),
-//                        gc.getMAX_HEALTH(), gc.getMAX_HEALTH());
-                ////!!!!
+                goose = new Goose(inp_name, GooseConfig.MAX_HUNGER, GooseConfig.MAX_HUNGER, GooseConfig.MAX_HYGIENE,
+                        GooseConfig.MAX_HYGIENE, GooseConfig.MAX_SATISFACTION, GooseConfig.MAX_SATISFACTION,
+                        GooseConfig.MAX_HEALTH, GooseConfig.MAX_HEALTH);
                 System.out.println("Goose is created! \n A description: " + goose.toString());
                 return goose;
             } else if(input2.equals("2")) {
@@ -67,26 +72,31 @@ public class Console {
         return goose;
     }
 
-    public Action chooseAction(Goose goose) throws Exception{
+    public Action chooseAction(Goose goose) throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Hello, happy user, please choose an action: \n 1 - feed goose \n 2 - wash goose " +
                 "\n 3 - interact with goose \n 4 - choose hat for goose \n 5 - check goose state \n 6 - stop program");
         String input = scanner.nextLine();
 
-        Action action = new Action(input);
 
  //       try {
             if (input.equals("1")) {
-                FoodDao foodDao = new FoodDao();
-                action.setAdditionalAttribute(chooseFood(foodDao.getFood()));
-                return action;
+                FeedingAction feedingAction = new FeedingAction();
+                feedingAction.setActionType(input);
+                feedingAction.setFood(chooseFood());
+                return feedingAction;
             } else if (input.equals("2")) {
-
+                DetergentDao detergentDao = new DetergentDao();
             } else if (input.equals("3")) {
 
             } else if (input.equals("4")) {
+                // saveToDB
 
+
+                //Hat newHat = customNewHat;
+                //hatAction.setHat(newHat);
+                //return hatAction;
             } else if (input.equals("5")) {
                 System.out.println(goose.toString());
             } else if (input.equals("6")) {
@@ -97,26 +107,32 @@ public class Console {
 //        } catch (Exception e) {
 //            System.out.println(e);
 //        }
-        return action;
+        return new Action(); // Exeption or default action for next check
     }
 
 
-    public String chooseFood(ResultSet rs) throws Exception {
+    private Food chooseFood() throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
-
-        int i = 1;
+        FoodDao foodDao = new FoodDao();
 
         System.out.println("Hello, happy user, please choose a food:");
-        while (rs.next()) {
-            String foodName = rs.getString("foodName");
-            System.out.println("\n" + i + " - " + foodName); //id!!!
-            i++;
-        }
+        HashMap<String, Food> foods = foodDao.getFoods();
+
+        foods.forEach((key, value) -> {
+            System.out.print(value.getName() + " - " + key);
+        });
 
         String input = scanner.nextLine();
-        return input;
+
+        return foods.get(input);
     }
 
+
+//    private void saveStateToDB(Goose goose) {
+//        GooseDao gooseDao = new GooseDao();
+//        gooseDao.upsert(goose);
+//
+//    }
 
 
 

@@ -1,9 +1,10 @@
 package com.goose.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class Food {
+public class Food  {
     private String name;
     private int nutrition;
 
@@ -28,11 +29,8 @@ public class Food {
         this.nutrition = nutrition;
     }
 
-//    static final List<Food> foods = new ArrayList<Food>() {{
-//        add(1, new Food("cookie", 10));
-//        add(2, new Food("marshmallow", 5));
-//        add(3, new Food("chocolate", 15));
-//    }};
-
+//    static public int getNutritionById (String id, HashMap<String, Food> foods) {
+//        return foods.get(id).getNutrition(); // needs check
+//    }
 
 }

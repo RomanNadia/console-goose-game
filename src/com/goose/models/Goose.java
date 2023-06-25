@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Goose {
+    //name is a primary key!
     private String name;
 
     private int maxHunger;
@@ -19,6 +20,8 @@ public class Goose {
 
     private int maxHealth;
     private int currentHealth;
+
+    //private Hat hat;
 
 
     public Goose() {
@@ -45,14 +48,16 @@ public class Goose {
                 "\n health:" + currentHealth + "/" + maxHealth;
     }
 
-    public void feedGoose(Food food) {
-        int newCurrentHunger = currentHunger + food.getNutrition();
+    public void feedGoose(int nutrition) {
+        int newCurrentHunger = currentHunger + nutrition;
         if (newCurrentHunger > maxHunger)
             newCurrentHunger = maxHunger;
         currentHunger = newCurrentHunger;
         //update?
         System.out.println("Goose was fed. \n A description: " + toString());
     }
+
+
 
     public void updateCharacteristics(long timeMilli) {
         starve(timeMilli);
