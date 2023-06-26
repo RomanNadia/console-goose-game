@@ -19,4 +19,9 @@ abstract public class Dao {
         Statement stmt = connection.createStatement();
         return stmt.executeQuery(query);
     }
+
+    protected void insert(String query) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(query);
+    }
 }

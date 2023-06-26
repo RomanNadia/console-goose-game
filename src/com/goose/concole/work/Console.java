@@ -104,13 +104,20 @@ public class Console {
                     wearingHatAction.setHat(chooseHat());
                     return wearingHatAction;
                 } else if (inputHat.equals("2")) {
-
+                    System.out.println("Enter hat name: ");
+                    String hatName = scanner.nextLine();
+                    System.out.println("Enter nutrition: ");
+                    String nutrition = scanner.nextLine();
+                    System.out.println("Enter washing level: ");
+                    String washingLevel = scanner.nextLine();                        ///and check here is hat uniqe
+                    System.out.println("Enter satisfaction: ");                     ///here must be something else!!!
+                    String satisfaction = scanner.nextLine();
+                    Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
+                            Integer.parseInt(satisfaction));
+                    wearingHatAction.setHat(newHat);
+                    saveHatToDB(newHat);
+                    return wearingHatAction;
                 }
-
-
-                //Hat newHat = customNewHat;
-                //hatAction.setHat(newHat);
-                //return hatAction;
             } else if (input.equals("5")) {
                 System.out.println(goose.toString());
             } else if (input.equals("6")) {
@@ -159,13 +166,14 @@ public class Console {
     }
 
 
+    private void saveHatToDB(Hat hat) throws SQLException, ClassNotFoundException {
+        HatDao hatDao = new HatDao();
+        hatDao.insertHat(hat);
+    }
 
-//    private void saveStateToDB(Goose goose) {
-//        GooseDao gooseDao = new GooseDao();
-//        gooseDao.upsert(goose);
-//
+//    private void saveStateToDB(Hat hat) throws SQLException, ClassNotFoundException {
+//        HatDao hatDao = new HatDao();
+//        hatDao.upsert(Hat);
 //    }
-
-
 
 }
