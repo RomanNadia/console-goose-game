@@ -6,13 +6,16 @@ import java.util.Scanner;
 
 import com.goose.concole.work.actions.Action;
 import com.goose.concole.work.actions.FeedingAction;
+import com.goose.concole.work.actions.WearingHatAction;
 import com.goose.conection.bd.dao.DetergentDao;
 import com.goose.conection.bd.dao.FoodDao;
 import com.goose.conection.bd.dao.GooseDao;
+import com.goose.conection.bd.dao.HatDao;
 import com.goose.config.GooseConfig;
 import com.goose.info.from.db.FoodsInfo;
 import com.goose.models.Food;
 import com.goose.models.Goose;
+import com.goose.models.Hat;
 
 public class Console {
 
@@ -91,7 +94,18 @@ public class Console {
             } else if (input.equals("3")) {
 
             } else if (input.equals("4")) {
-                // saveToDB
+                WearingHatAction wearingHatAction = new WearingHatAction();
+                wearingHatAction.setActionType(input);
+
+                System.out.println("Happy user, please choose an action: \n 1 - chose existed hat \n 2 - custom a new hat");
+                String inputHat = scanner.nextLine();
+
+                if (inputHat.equals("1")) {
+                    wearingHatAction.setHat(chooseHat());
+                    return wearingHatAction;
+                } else if (inputHat.equals("2")) {
+
+                }
 
 
                 //Hat newHat = customNewHat;
@@ -124,22 +138,26 @@ public class Console {
         return foods.get(input);
     }
 
+    private Hat chooseHat() throws SQLException, ClassNotFoundException {
+        Scanner scanner = new Scanner(System.in);
 
-//    private Food chooseFood() throws SQLException, ClassNotFoundException {
-//        Scanner scanner = new Scanner(System.in);
-//        FoodDao foodDao = new FoodDao();
-//
-//        System.out.println("Hello, happy user, please choose a food:");
-//        HashMap<String, Food> foods = foodDao.getFoods();
-//
-//        foods.forEach((key, value) -> {
-//            System.out.print(value.getName() + " - " + key);
-//        });
-//
-//        String input = scanner.nextLine();
-//
-//        return foods.get(input);
-//    }
+        System.out.println("Hello, happy user, please choose an existing hat to wear:");
+        HatDao hatDao = new HatDao();
+        HashMap<String, Hat> hats = hatDao.getHats();
+
+        hats.forEach((key, value) -> {
+            if (key.equals("1")) {
+                System.out.print("I do not want my goose wear ANY hat! - " + key + "\n");
+            } else {
+                System.out.print(value.getName() + " - " + key + "\n");
+            }
+        });
+
+        String input = scanner.nextLine();
+
+        return hats.get(input);
+    }
+
 
 
 //    private void saveStateToDB(Goose goose) {

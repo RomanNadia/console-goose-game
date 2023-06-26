@@ -21,8 +21,7 @@ public class Goose {
     private int maxHealth;
     private int currentHealth;
 
-    //private Hat hat;
-
+    private Hat hat = new Hat("no hat", 0, 0, 0);  //***********
 
     public Goose() {
     }
@@ -58,20 +57,19 @@ public class Goose {
     }
 
 
+    public void wearHat(Hat hat) {
+        takeOffHat();
+        this.hat = hat;
+        maxHunger = maxHunger + hat.getNutrition();
+        maxHygiene = maxHygiene + hat.getWashingLevel();
+        maxSatisfaction = maxSatisfaction + hat.getSatisfaction();
+        System.out.println("Goose is wearing " + hat.getName() + ". \n Now goose description is: " + toString());
+    }
+
 
     public void updateCharacteristics(long timeMilli) {
         starve(timeMilli);
         //gigiene satisfaction
-    }
-
-    private void starve(long timeMilli) {
-        Date date = new Date();
-        long timeMilliNow = date.getTime();
-        currentHunger = (int)((long)currentHealth - (((timeMilliNow - timeMilli)/10000) * 5));
-        if(currentHunger <= 0) {
-            currentHunger = 0;
-            //shrink health
-        }
     }
 
     public String getName() {
@@ -144,5 +142,22 @@ public class Goose {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+
+    private void starve(long timeMilli) {
+        Date date = new Date();
+        long timeMilliNow = date.getTime();
+        currentHunger = (int)((long)currentHealth - (((timeMilliNow - timeMilli)/10000) * 5));
+        if(currentHunger <= 0) {
+            currentHunger = 0;
+            //shrink health
+        }
+    }
+
+    private void takeOffHat() {
+        maxHunger = maxHunger - hat.getNutrition();
+        maxHygiene = maxHygiene - hat.getWashingLevel();
+        maxSatisfaction = maxSatisfaction - hat.getSatisfaction();
     }
 }

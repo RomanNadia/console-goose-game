@@ -1,7 +1,6 @@
 package com.goose.conection.bd.dao;
 
 import com.goose.conection.bd.ConectionCreator;
-import com.goose.exceptions.IdNotFoundException;
 import com.goose.models.Food;
 
 import java.sql.Connection;
