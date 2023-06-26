@@ -16,7 +16,7 @@ public class GooseService {
         Class actionClass = action.getClass();
 
         if (actionClass == FeedingAction.class) {
-            goose.feedGoose(((FeedingAction) action).getFood().getNutrition());
+            goose.feedGoose(((FeedingAction) action).getFood());
         } else if (actionClass == FeedingAction.class) {
 
         } else if (actionClass == FeedingAction.class) {

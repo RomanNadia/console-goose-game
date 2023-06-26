@@ -48,13 +48,13 @@ public class Goose {
                 "\n health:" + currentHealth + "/" + maxHealth;
     }
 
-    public void feedGoose(int nutrition) {
-        int newCurrentHunger = currentHunger + nutrition;
+    public void feedGoose(Food food) {
+        int newCurrentHunger = currentHunger + food.getNutrition();
         if (newCurrentHunger > maxHunger)
             newCurrentHunger = maxHunger;
         currentHunger = newCurrentHunger;
         //update?
-        System.out.println("Goose was fed. \n A description: " + toString());
+        System.out.println("Goose was fed with " + food.getName() + ". \n A description: " + toString());
     }
 
 

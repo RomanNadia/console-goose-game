@@ -10,6 +10,7 @@ import com.goose.conection.bd.dao.DetergentDao;
 import com.goose.conection.bd.dao.FoodDao;
 import com.goose.conection.bd.dao.GooseDao;
 import com.goose.config.GooseConfig;
+import com.goose.info.from.db.FoodsInfo;
 import com.goose.models.Food;
 import com.goose.models.Goose;
 
@@ -80,10 +81,9 @@ public class Console {
         String input = scanner.nextLine();
 
 
- //       try {
             if (input.equals("1")) {
                 FeedingAction feedingAction = new FeedingAction();
-                feedingAction.setActionType(input);
+                feedingAction.setActionType(input);                //useless
                 feedingAction.setFood(chooseFood());
                 return feedingAction;
             } else if (input.equals("2")) {
@@ -104,28 +104,42 @@ public class Console {
             } else {
                 System.out.println("Please try again: ");
             }
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
+
         return new Action(); // Exeption or default action for next check
     }
 
 
     private Food chooseFood() throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
-        FoodDao foodDao = new FoodDao();
 
         System.out.println("Hello, happy user, please choose a food:");
-        HashMap<String, Food> foods = foodDao.getFoods();
+        HashMap<String, Food> foods = FoodsInfo.getFoods();
 
         foods.forEach((key, value) -> {
-            System.out.print(value.getName() + " - " + key);
+            System.out.print(value.getName() + " - " + key + "\n");
         });
 
         String input = scanner.nextLine();
 
         return foods.get(input);
     }
+
+
+//    private Food chooseFood() throws SQLException, ClassNotFoundException {
+//        Scanner scanner = new Scanner(System.in);
+//        FoodDao foodDao = new FoodDao();
+//
+//        System.out.println("Hello, happy user, please choose a food:");
+//        HashMap<String, Food> foods = foodDao.getFoods();
+//
+//        foods.forEach((key, value) -> {
+//            System.out.print(value.getName() + " - " + key);
+//        });
+//
+//        String input = scanner.nextLine();
+//
+//        return foods.get(input);
+//    }
 
 
 //    private void saveStateToDB(Goose goose) {

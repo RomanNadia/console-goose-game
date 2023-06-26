@@ -1,10 +1,13 @@
 package com.goose.models;
 
+import com.goose.conection.bd.dao.FoodDao;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Food  {
+public class Food {
     private String name;
     private int nutrition;
 
@@ -28,9 +31,5 @@ public class Food  {
     public void setNutrition(int nutrition) {
         this.nutrition = nutrition;
     }
-
-//    static public int getNutritionById (String id, HashMap<String, Food> foods) {
-//        return foods.get(id).getNutrition(); // needs check
-//    }
 
 }
