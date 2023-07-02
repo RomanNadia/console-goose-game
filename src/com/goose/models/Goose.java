@@ -1,8 +1,5 @@
 package com.goose.models;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Goose {
@@ -61,8 +58,8 @@ public class Goose {
         takeOffHat();
         this.hat = hat;
         maxHunger = maxHunger + hat.getNutrition();
-        maxHygiene = maxHygiene + hat.getWashingLevel();
-        maxSatisfaction = maxSatisfaction + hat.getSatisfaction();
+        maxHygiene = maxHygiene + hat.getHygieneBonus();
+        maxSatisfaction = maxSatisfaction + hat.getSatisfactionBonus();
         System.out.println("Goose is wearing " + hat.getName() + ". \n Now goose description is: " + toString());
     }
 
@@ -157,7 +154,7 @@ public class Goose {
 
     private void takeOffHat() {
         maxHunger = maxHunger - hat.getNutrition();
-        maxHygiene = maxHygiene - hat.getWashingLevel();
-        maxSatisfaction = maxSatisfaction - hat.getSatisfaction();
+        maxHygiene = maxHygiene - hat.getHygieneBonus();
+        maxSatisfaction = maxSatisfaction - hat.getSatisfactionBonus();
     }
 }

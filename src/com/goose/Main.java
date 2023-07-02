@@ -39,7 +39,6 @@ public class Main {
             timeMilli = date.getTime();
             Action action = console.chooseAction(goose);
             gooseService.doAction(action, goose);
-
         }
 
 

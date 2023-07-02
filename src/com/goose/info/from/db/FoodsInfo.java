@@ -10,22 +10,21 @@ public class FoodsInfo {
 
     private static HashMap<String, Food> foods;
 
-    static {
-        try {
-            foods = FoodsInfo.inicializeFoods();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static HashMap<String, Food> getFoods() {
+    public static synchronized HashMap<String, Food> getFoods() throws SQLException, ClassNotFoundException {
+
+        if (foods == null)
+            foods =  FoodsInfo.inicializeFoods();
+
         return foods;
     }
+
 
     private static HashMap<String, Food> inicializeFoods() throws SQLException, ClassNotFoundException {
         FoodDao foodDao = new FoodDao();
         return foodDao.getFoods();
     }
+
+
+
 }

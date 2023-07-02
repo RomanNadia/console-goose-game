@@ -2,15 +2,15 @@ package com.goose.models;
 
 public class Hat {
     private String name;
-    private int nutrition;
-    private int washingLevel;
-    private int satisfaction;
+    private int hungerBonus;
+    private int hygieneBonus;
+    private int satisfactionBonus;
 
-    public Hat(String name, int nutrition, int washingLevel, int satisfaction) {
+    public Hat(String name, int hungerBonus, int hygieneBonus, int satisfactionBonus) {
         this.name = name;
-        this.nutrition = nutrition;
-        this.washingLevel = washingLevel;
-        this.satisfaction = satisfaction;
+        this.hungerBonus = hungerBonus;
+        this.hygieneBonus = hygieneBonus;
+        this.satisfactionBonus = satisfactionBonus;
     }
 
     public String getName() {
@@ -22,26 +22,26 @@ public class Hat {
     }
 
     public int getNutrition() {
-        return nutrition;
+        return hungerBonus;
     }
 
     public void setNutrition(int nutrition) {
-        this.nutrition = nutrition;
+        this.hungerBonus = nutrition;
     }
 
-    public int getWashingLevel() {
-        return washingLevel;
+    public int getHygieneBonus() {
+        return hygieneBonus;
     }
 
-    public void setWashingLevel(int washingLevel) {
-        this.washingLevel = washingLevel;
+    public void setHygieneBonus(int hygieneBonus) {
+        this.hygieneBonus = hygieneBonus;
     }
 
-    public int getSatisfaction() {
-        return satisfaction;
+    public int getSatisfactionBonus() {
+        return satisfactionBonus;
     }
 
-    public void setSatisfaction(int satisfaction) {
-        this.satisfaction = satisfaction;
+    public void setSatisfactionBonus(int satisfactionBonus) {
+        this.satisfactionBonus = satisfactionBonus;
     }
 }

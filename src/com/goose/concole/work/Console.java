@@ -85,38 +85,32 @@ public class Console {
 
 
             if (input.equals("1")) {
-                FeedingAction feedingAction = new FeedingAction();
-                feedingAction.setActionType(input);                //useless
-                feedingAction.setFood(chooseFood());
+                FeedingAction feedingAction = new FeedingAction(chooseFood());
                 return feedingAction;
             } else if (input.equals("2")) {
                 DetergentDao detergentDao = new DetergentDao();
             } else if (input.equals("3")) {
 
             } else if (input.equals("4")) {
-                WearingHatAction wearingHatAction = new WearingHatAction();
-                wearingHatAction.setActionType(input);
 
-                System.out.println("Happy user, please choose an action: \n 1 - chose existed hat \n 2 - custom a new hat");
+                System.out.println("Happy user, please choose an action: \n 1 - chose existing hat \n 2 - custom a new hat");
                 String inputHat = scanner.nextLine();
 
                 if (inputHat.equals("1")) {
-                    wearingHatAction.setHat(chooseHat());
-                    return wearingHatAction;
+                    return new WearingHatAction(chooseHat());
                 } else if (inputHat.equals("2")) {
                     System.out.println("Enter hat name: ");
                     String hatName = scanner.nextLine();
                     System.out.println("Enter nutrition: ");
                     String nutrition = scanner.nextLine();
                     System.out.println("Enter washing level: ");
-                    String washingLevel = scanner.nextLine();                        ///and check here is hat uniqe
-                    System.out.println("Enter satisfaction: ");                     ///here must be something else!!!
+                    String washingLevel = scanner.nextLine();
+                    System.out.println("Enter satisfaction: ");
                     String satisfaction = scanner.nextLine();
                     Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
                             Integer.parseInt(satisfaction));
-                    wearingHatAction.setHat(newHat);
                     saveHatToDB(newHat);
-                    return wearingHatAction;
+                    return new WearingHatAction(newHat);
                 }
             } else if (input.equals("5")) {
                 System.out.println(goose.toString());
