@@ -29,7 +29,7 @@ public class HatDao extends Dao {
 
 
     public void insertHat(Hat hat) throws SQLException {
-        insert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus) VALUE ('" + hat.getName() + "', " +
+        upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus) VALUE ('" + hat.getName() + "', " +
                 hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", " + hat.getSatisfactionBonus() + ")");
     }
 

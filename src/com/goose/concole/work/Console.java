@@ -115,7 +115,8 @@ public class Console {
             } else if (input.equals("5")) {
                 System.out.println(goose.toString());
             } else if (input.equals("6")) {
-
+                /// !!!! save goose state to bd!!! need to return something and stop or return StopAction and replace
+                // all saving (hat included) to service and then stop program
             } else {
                 System.out.println("Please try again: ");
             }

@@ -18,7 +18,10 @@ public class Goose {
     private int maxHealth;
     private int currentHealth;
 
-    private Hat hat = new Hat("no hat", 0, 0, 0);  //***********
+    private long lastUpdateTime;
+
+    private Hat currentHat = new Hat("no hat", 0, 0, 0);
+    //FoodsInfo.getFoods().get("1"); // to the constructor!!!
 
     public Goose() {
     }
@@ -56,7 +59,7 @@ public class Goose {
 
     public void wearHat(Hat hat) {
         takeOffHat();
-        this.hat = hat;
+        this.currentHat = hat;
         maxHunger = maxHunger + hat.getNutrition();
         maxHygiene = maxHygiene + hat.getHygieneBonus();
         maxSatisfaction = maxSatisfaction + hat.getSatisfactionBonus();
@@ -141,6 +144,21 @@ public class Goose {
         this.currentHealth = currentHealth;
     }
 
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public Hat getCurrentHat() {
+        return currentHat;
+    }
+
+    public void setCurrentHat(Hat currentHat) {
+        this.currentHat = currentHat;
+    }
 
     private void starve(long timeMilli) {
         Date date = new Date();
@@ -153,8 +171,8 @@ public class Goose {
     }
 
     private void takeOffHat() {
-        maxHunger = maxHunger - hat.getNutrition();
-        maxHygiene = maxHygiene - hat.getHygieneBonus();
-        maxSatisfaction = maxSatisfaction - hat.getSatisfactionBonus();
+        maxHunger = maxHunger - currentHat.getNutrition();
+        maxHygiene = maxHygiene - currentHat.getHygieneBonus();
+        maxSatisfaction = maxSatisfaction - currentHat.getSatisfactionBonus();
     }
 }

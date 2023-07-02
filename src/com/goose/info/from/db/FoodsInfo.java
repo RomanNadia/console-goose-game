@@ -21,8 +21,7 @@ public class FoodsInfo {
 
 
     private static HashMap<String, Food> inicializeFoods() throws SQLException, ClassNotFoundException {
-        FoodDao foodDao = new FoodDao();
-        return foodDao.getFoods();
+        return FoodDao.getFoodDao().getFoods();
     }
 
 

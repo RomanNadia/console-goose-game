@@ -11,8 +11,17 @@ import java.util.HashMap;
 
 public class FoodDao extends Dao {
 
+    private static FoodDao foodDao;
 
-    public FoodDao() throws SQLException, ClassNotFoundException {
+    private FoodDao() throws SQLException, ClassNotFoundException {
+    }
+
+    public static synchronized FoodDao getFoodDao() throws SQLException, ClassNotFoundException {
+
+        if (foodDao == null)
+            foodDao = new FoodDao();
+
+        return foodDao;
     }
 
     public HashMap<String, Food> getFoods() throws SQLException {
