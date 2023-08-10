@@ -9,8 +9,20 @@ import java.util.HashMap;
 
 public class HatDao extends Dao {
 
-    public HatDao() throws SQLException, ClassNotFoundException {
+    private static HatDao hatDao;
+
+    private HatDao() throws SQLException, ClassNotFoundException {
     }
+
+
+    public static synchronized HatDao getHatDao() throws SQLException, ClassNotFoundException {
+
+        if (hatDao == null)
+            hatDao = new HatDao();
+
+        return hatDao;
+    }
+
 
     public HashMap<String, Hat> getHats() throws SQLException {
         ResultSet rs = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus FROM hat");
@@ -29,17 +41,17 @@ public class HatDao extends Dao {
     }
 
 
-    public Hat getHatById(String id) throws SQLException {
-        ResultSet rs = executeQuery("SELECT * FROM hat WHERE id = " + id);
-        return new Hat(rs.getString("hatName"), rs.getInt("hungerBonus"),
-                rs.getInt("hygieneBonus"), rs.getInt("satisfactionBonus"));
-    }
+//    public Hat getHatById(String id) throws SQLException {
+//        ResultSet rs = executeQuery("SELECT * FROM hat WHERE id = " + id);
+//        return new Hat(rs.getString("hatName"), rs.getInt("hungerBonus"),
+//                rs.getInt("hygieneBonus"), rs.getInt("satisfactionBonus"));
+//    }
 
 
-    public void insertHat(Hat hat) throws SQLException {
-        upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus) VALUE ('" + hat.getName() + "', " +
-                hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", " + hat.getSatisfactionBonus() + ")");
-    }
+//    public void insertHat(Hat hat) throws SQLException {
+//        upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus) VALUE ('" + hat.getName() + "', " +
+//                hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", " + hat.getSatisfactionBonus() + ")");
+//    }
 
 
 }

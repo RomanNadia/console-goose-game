@@ -1,6 +1,10 @@
 package com.goose.models;
 
+import com.goose.info.from.db.HatsInfo;
+
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Goose {
     //name is a primary key!
@@ -20,14 +24,19 @@ public class Goose {
 
     private long lastUpdateTime;
 
-    private Hat currentHat = new Hat("no hat", 0, 0, 0);
-    //FoodsInfo.getFoods().get("1"); // to the constructor!!!
+    private Hat currentHat = setDefaultHat();
 
-    public Goose() {
+    private Hat setDefaultHat() throws SQLException, ClassNotFoundException {
+        HashMap<String, Hat> hats = HatsInfo.getHats();
+        return hats.get("1");
+    }
+
+
+    public Goose() throws SQLException, ClassNotFoundException {
     }
 
     public Goose(String name, int max_hunger, int current_hunger, int max_hygiene, int current_hygiene,
-                 int max_satisfaction, int current_satisfaction, int max_health, int current_health) {
+                 int max_satisfaction, int current_satisfaction, int max_health, int current_health) throws SQLException, ClassNotFoundException {
         this.name = name;
         this.maxHunger = max_hunger;
         this.currentHunger = current_hunger;
@@ -40,7 +49,7 @@ public class Goose {
     }
 
     public Goose(String name, int maxHunger, int currentHunger, int maxHygiene, int currentHygiene, int maxSatisfaction,
-                 int currentSatisfaction, int maxHealth, int currentHealth, long lastUpdateTime, Hat currentHat) {
+                 int currentSatisfaction, int maxHealth, int currentHealth, long lastUpdateTime, Hat currentHat) throws SQLException, ClassNotFoundException {
         this.name = name;
         this.maxHunger = maxHunger;
         this.currentHunger = currentHunger;

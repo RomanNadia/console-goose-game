@@ -13,6 +13,7 @@ import com.goose.conection.bd.dao.GooseDao;
 import com.goose.conection.bd.dao.HatDao;
 import com.goose.config.GooseConfig;
 import com.goose.info.from.db.FoodsInfo;
+import com.goose.info.from.db.HatsInfo;
 import com.goose.models.Food;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
@@ -92,7 +93,7 @@ public class Console {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Hello, happy user, please choose an action: \n 1 - feed goose \n 2 - wash goose " +
-                "\n 3 - interact with goose \n 4 - choose hat for goose \n 5 - check goose state \n 6 - stop program");
+                "\n 3 - interact with goose \n 4 - choose hat for goose \n 5 - check goose state \n 6 - save and stop");
         String input = scanner.nextLine();
 
 
@@ -121,14 +122,14 @@ public class Console {
                     String satisfaction = scanner.nextLine();
                     Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
                             Integer.parseInt(satisfaction));
-                    saveHatToDB(newHat);
+                    //saveHatToDB(newHat);
                     return new WearingHatAction(newHat);
                 }
             } else if (input.equals("5")) {
                 System.out.println(goose.toString());
             } else if (input.equals("6")) {
-                /// !!!! save goose state to bd!!! need to return something and stop or return StopAction and replace
-                // all saving (hat included) to service and then stop program
+                saveGooseChangesToBd(goose);
+                System.exit(0);
             } else {
                 System.out.println("Please try again: ");
             }
@@ -174,8 +175,7 @@ public class Console {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Hello, happy user, please choose an existing hat to wear:");
-        HatDao hatDao = new HatDao();
-        HashMap<String, Hat> hats = hatDao.getHats();
+        HashMap<String, Hat> hats = HatsInfo.getHats();
 
         hats.forEach((key, value) -> {
             if (key.equals("1")) {
@@ -191,16 +191,23 @@ public class Console {
     }
 
 
-    private void saveHatToDB(Hat hat) throws SQLException, ClassNotFoundException {
-        HatDao hatDao = new HatDao();
-        hatDao.insertHat(hat);
-    }
+//    private void saveHatToDB(Hat hat) throws SQLException, ClassNotFoundException {
+//        HatDao hatDao = new HatDao();
+//        hatDao.insertHat(hat);
+//    }
 
 
     private void saveNewGooseToBd(Goose goose) throws SQLException, ClassNotFoundException {
         GooseDao gooseDao = new GooseDao();
         gooseDao.insertGoose(goose);
     }
+
+
+    private void saveGooseChangesToBd(Goose goose) throws SQLException, ClassNotFoundException {
+        GooseDao gooseDao = new GooseDao();
+        gooseDao.updateGoose(goose);
+    }
+
 
 //    private void saveStateToDB(Hat hat) throws SQLException, ClassNotFoundException {
 //        HatDao hatDao = new HatDao();

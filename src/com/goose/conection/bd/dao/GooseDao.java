@@ -1,11 +1,13 @@
 package com.goose.conection.bd.dao;
 
+import com.goose.info.from.db.HatsInfo;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class GooseDao extends Dao {
 
@@ -29,14 +31,15 @@ public class GooseDao extends Dao {
 
 
     public Goose getGooseByName(String name) throws SQLException, ClassNotFoundException {
-        ResultSet rs = executeQuery("SELECT * FROM goose WHERE gooseName = " + name);
-        HatDao hatDao = new HatDao();
-        return new Goose(rs.getString("gooseName"), rs.getInt("maxHunger"),
+        ResultSet rs = executeQuery("SELECT maxHunger, currentHunger, maxHygiene, currentHygiene, maxSatisfaction, currentSatisfaction, maxHealth, currentHealth, lastUpdateTime, currentHatId FROM goose WHERE gooseName = '" + name + "'");
+        HashMap<String, Hat> hats = HatsInfo.getHats();
+        rs.next();
+        return new Goose(name, rs.getInt("maxHunger"),
                 rs.getInt("currentHunger"), rs.getInt("maxHygiene"),
                 rs.getInt("currentHygiene"), rs.getInt("maxSatisfaction"),
                 rs.getInt("currentSatisfaction"), rs.getInt("maxHealth"),
                 rs.getInt("currentHealth"), rs.getLong("lastUpdateTime"),
-                hatDao.getHatById(String.valueOf(rs.getInt("currentHatId"))));
+                hats.get(String.valueOf(rs.getInt("currentHatId"))));
     }
 
 
@@ -56,13 +59,26 @@ public class GooseDao extends Dao {
     }
 
 
-    public void updateGoose(Goose goose) throws SQLException {
+    public void updateGoose(Goose goose) throws SQLException, ClassNotFoundException {
         upsert("UPDATE goose SET maxHunger = " + goose.getMaxHunger() + ", currentHunger = "
-                + goose.getMaxHunger() + ", maxHygiene = " + goose.getMaxHygiene() + ", currentHygiene = "
+                + goose.getCurrentHunger() + ", maxHygiene = " + goose.getMaxHygiene() + ", currentHygiene = "
                 + goose.getCurrentHygiene() + ", maxSatisfaction = " + goose.getMaxSatisfaction()
                 + ", currentSatisfaction = " + goose.getCurrentSatisfaction() + ", maxHealth = " + goose.getMaxHealth()
                 + ", currentHealth = " +  goose.getCurrentHealth() + ", lastUpdateTime = " + goose.getLastUpdateTime()
-                + ", currentHatId = " + goose.getCurrentHat() + "WHERE gooseName = " + goose.getName() + ")");
+                + ", currentHatId = " + currentHatId(goose.getCurrentHat()) + " WHERE gooseName = '" + goose.getName() + "'");
+    }
+
+
+    private int currentHatId(Hat hat) throws SQLException, ClassNotFoundException {
+        int currentHatId = 1;
+        HashMap<String, Hat> hats = HatsInfo.getHats();
+        for(Entry<String, Hat> entry: hats.entrySet()) {
+            if(entry.getValue().equals(hat)) {
+                currentHatId = Integer.parseInt(entry.getKey());
+                break;
+            }
+        }
+        return currentHatId;
     }
 
 
