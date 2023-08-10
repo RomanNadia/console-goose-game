@@ -1,5 +1,10 @@
 package com.goose.models;
 
+import com.goose.conection.bd.dao.Dao;
+
+import java.sql.SQLException;
+import java.util.Objects;
+
 public class Hat {
     private String name;
     private int hungerBonus;
@@ -44,4 +49,23 @@ public class Hat {
     public void setSatisfactionBonus(int satisfactionBonus) {
         this.satisfactionBonus = satisfactionBonus;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hat hat = (Hat) o;
+        return name.equals(hat.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+
+
 }
+
+

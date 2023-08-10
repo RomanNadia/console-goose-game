@@ -24,6 +24,7 @@ public class FoodDao extends Dao {
         return foodDao;
     }
 
+
     public HashMap<String, Food> getFoods() throws SQLException {
         ResultSet rs = executeQuery("SELECT id, foodName, nutrition FROM food");
         HashMap<String, Food> foods = new HashMap<String, Food>();

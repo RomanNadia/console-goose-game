@@ -1,5 +1,6 @@
 package com.goose.conection.bd.dao;
 
+import com.goose.models.Goose;
 import com.goose.models.Hat;
 
 import java.sql.ResultSet;
@@ -28,9 +29,20 @@ public class HatDao extends Dao {
     }
 
 
+    public Hat getHatById(String id) throws SQLException {
+        ResultSet rs = executeQuery("SELECT * FROM hat WHERE id = " + id);
+        return new Hat(rs.getString("hatName"), rs.getInt("hungerBonus"),
+                rs.getInt("hygieneBonus"), rs.getInt("satisfactionBonus"));
+    }
+
+
     public void insertHat(Hat hat) throws SQLException {
         upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus) VALUE ('" + hat.getName() + "', " +
                 hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", " + hat.getSatisfactionBonus() + ")");
     }
 
+
 }
+
+
+

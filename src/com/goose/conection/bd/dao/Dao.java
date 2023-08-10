@@ -12,7 +12,7 @@ abstract public class Dao {
     private Connection connection;
 
     protected Dao() throws SQLException, ClassNotFoundException {
-        this.connection = ConectionCreator.getConnection();;
+        this.connection = ConectionCreator.getConnection();
     }
 
     protected ResultSet executeQuery(String query) throws SQLException {

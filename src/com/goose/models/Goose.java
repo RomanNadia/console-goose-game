@@ -39,6 +39,21 @@ public class Goose {
         this.currentHealth = current_health;
     }
 
+    public Goose(String name, int maxHunger, int currentHunger, int maxHygiene, int currentHygiene, int maxSatisfaction,
+                 int currentSatisfaction, int maxHealth, int currentHealth, long lastUpdateTime, Hat currentHat) {
+        this.name = name;
+        this.maxHunger = maxHunger;
+        this.currentHunger = currentHunger;
+        this.maxHygiene = maxHygiene;
+        this.currentHygiene = currentHygiene;
+        this.maxSatisfaction = maxSatisfaction;
+        this.currentSatisfaction = currentSatisfaction;
+        this.maxHealth = maxHealth;
+        this.currentHealth = currentHealth;
+        this.lastUpdateTime = lastUpdateTime;
+        this.currentHat = currentHat;
+    }
+
     @Override
     public String toString() {
         return "\n Goose " + name + "\n hunger:" + currentHunger + "/" + maxHunger +
