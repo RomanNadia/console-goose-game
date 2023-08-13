@@ -24,10 +24,12 @@ public class Goose {
 
     private long lastUpdateTime;
 
-    private Hat currentHat = setDefaultHat();
+    private Hat currentHat;
 
+
+    //use ???
     private Hat setDefaultHat() throws SQLException, ClassNotFoundException {
-        HashMap<String, Hat> hats = HatsInfo.getHats();
+        HashMap<String, Hat> hats = HatsInfo.getHats(this.name);
         return hats.get("1");
     }
 

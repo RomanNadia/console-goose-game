@@ -24,17 +24,38 @@ public class HatDao extends Dao {
     }
 
 
-    public HashMap<String, Hat> getHats() throws SQLException {
-        ResultSet rs = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus FROM hat");
+    //key is not id!!!
+    public HashMap<String, Hat> getHats(String gooseName) throws SQLException {
+        ResultSet rsOfDefaultHats = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus FROM hat WHERE " +
+                "gooseName = 'DEFAULT'");
+
         HashMap<String, Hat> hats = new HashMap<String, Hat>();
 
-        while (rs.next()) {
-            String id = rs.getString("id");
-            String hatName = rs.getString("hatName");
-            int hungerBonus = rs.getInt("hungerBonus");
-            int hygieneBonus = rs.getInt("hygieneBonus");
-            int satisfactionBonus = rs.getInt("satisfactionBonus");
-            hats.put(id, new Hat(hatName, hungerBonus, hygieneBonus, satisfactionBonus));
+        int i = 1;
+
+        while (rsOfDefaultHats.next()) {
+            int id = rsOfDefaultHats.getInt("id");
+            String hatName = rsOfDefaultHats.getString("hatName");
+            int hungerBonus = rsOfDefaultHats.getInt("hungerBonus");
+            int hygieneBonus = rsOfDefaultHats.getInt("hygieneBonus");
+            int satisfactionBonus = rsOfDefaultHats.getInt("satisfactionBonus");
+            hats.put(Integer.toString(i), new Hat(id, hatName, hungerBonus, hygieneBonus, satisfactionBonus));
+            i++;
+        }
+
+
+        ResultSet rsOfCustomHatsOfGoose = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus " +
+                "FROM hat WHERE gooseName = '" + gooseName + "'");
+
+
+        while (rsOfCustomHatsOfGoose.next()) {
+            int id = rsOfCustomHatsOfGoose.getInt("id");
+            String hatName = rsOfCustomHatsOfGoose.getString("hatName");
+            int hungerBonus = rsOfCustomHatsOfGoose.getInt("hungerBonus");
+            int hygieneBonus = rsOfCustomHatsOfGoose.getInt("hygieneBonus");
+            int satisfactionBonus = rsOfCustomHatsOfGoose.getInt("satisfactionBonus");
+            hats.put(Integer.toString(i), new Hat(id, hatName, hungerBonus, hygieneBonus, satisfactionBonus));
+            i++;
         }
 
         return hats;
@@ -48,10 +69,19 @@ public class HatDao extends Dao {
 //    }
 
 
-//    public void insertHat(Hat hat) throws SQLException {
-//        upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus) VALUE ('" + hat.getName() + "', " +
-//                hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", " + hat.getSatisfactionBonus() + ")");
-//    }
+    public void insertHat(Hat hat, String gooseName) throws SQLException {
+        upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus, gooseName) VALUE ('" + hat.getName() + "', " +
+                hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", " + hat.getSatisfactionBonus() + ", '" + gooseName + "' )");
+    }
+
+
+    //do we even need id if names are unique????
+    public int findHatIdByName(String hatName) throws SQLException {
+        ResultSet rs = executeQuery("SELECT id from hat WHERE hatName = '" + hatName + "'");
+        rs.next();
+        int id = rs.getInt("id");
+        return id;
+    }
 
 
 }

@@ -6,10 +6,19 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class Hat {
+    private int id;
     private String name;
     private int hungerBonus;
     private int hygieneBonus;
     private int satisfactionBonus;
+
+    public Hat(int id, String name, int hungerBonus, int hygieneBonus, int satisfactionBonus) {
+        this.id = id;
+        this.name = name;
+        this.hungerBonus = hungerBonus;
+        this.hygieneBonus = hygieneBonus;
+        this.satisfactionBonus = satisfactionBonus;
+    }
 
     public Hat(String name, int hungerBonus, int hygieneBonus, int satisfactionBonus) {
         this.name = name;
@@ -50,6 +59,13 @@ public class Hat {
         this.satisfactionBonus = satisfactionBonus;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -63,7 +79,6 @@ public class Hat {
     public int hashCode() {
         return Objects.hash(name);
     }
-
 
 
 }
