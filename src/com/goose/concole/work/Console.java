@@ -7,21 +7,40 @@ import java.util.Scanner;
 import com.goose.concole.work.actions.Action;
 import com.goose.concole.work.actions.FeedingAction;
 import com.goose.concole.work.actions.WearingHatAction;
-import com.goose.conection.bd.dao.DetergentDao;
-import com.goose.conection.bd.dao.FoodDao;
-import com.goose.conection.bd.dao.GooseDao;
-import com.goose.conection.bd.dao.HatDao;
+import com.goose.conection.bd.dao.*;
 import com.goose.config.GooseConfig;
 import com.goose.info.from.db.FoodsInfo;
 import com.goose.info.from.db.HatsInfo;
 import com.goose.models.Food;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
+import com.goose.models.Sessions;
+import com.mysql.cj.Session;
 
 public class Console {
 
 
     public Console() {
+    }
+
+
+    public Sessions chooseOrCreateSession() throws SQLException, ClassNotFoundException {
+        Scanner scanner = new Scanner(System.in);
+        Sessions session = new Sessions();
+
+        System.out.println("Hello, happy user, please choose an action: \n 1 - create new session \n 2 - continue with " +
+                "existed session");
+        String input = scanner.nextLine();
+
+        if(input.equals("1")) {
+            System.out.println("Enter session name: ");               //cheak if sseasion with such name already exist
+            String sessionName = scanner.nextLine();
+            session.setSessionName(sessionName);
+            saveNewSessionToBd(session);
+        } else if(input.equals("2")) {
+            session = chooseSession();
+        }
+        return session;
     }
 
 
@@ -160,6 +179,23 @@ public class Console {
     }
 
 
+    private Sessions chooseSession() throws SQLException, ClassNotFoundException {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Hello, happy user, please choose a session:");
+        SessionDao sessionDao = SessionDao.getSessionDao();
+        HashMap<String, Sessions> sessionsNames = sessionDao.getSessionsNames();
+
+        sessionsNames.forEach((key, value) -> {
+            System.out.print(value.getSessionName() + " - " + key + "\n");
+        });
+
+        String input = scanner.nextLine();
+
+        return sessionsNames.get(input);
+    }
+
+
     private Food chooseFood() throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
@@ -195,6 +231,11 @@ public class Console {
         return hats.get(input);
     }
 
+
+    private void saveNewSessionToBd(Sessions session) throws SQLException, ClassNotFoundException {
+        SessionDao sessionDao = SessionDao.getSessionDao();
+        sessionDao.insertSession(session);
+    }
 
 
     private void saveNewGooseToBd(Goose goose) throws SQLException, ClassNotFoundException {

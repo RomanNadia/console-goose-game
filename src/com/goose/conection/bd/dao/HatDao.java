@@ -75,7 +75,6 @@ public class HatDao extends Dao {
     }
 
 
-    //do we even need id if names are unique????
     public int findHatIdByName(String hatName) throws SQLException {
         ResultSet rs = executeQuery("SELECT id from hat WHERE hatName = '" + hatName + "'");
         rs.next();
