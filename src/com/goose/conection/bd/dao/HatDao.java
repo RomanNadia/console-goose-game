@@ -2,6 +2,7 @@ package com.goose.conection.bd.dao;
 
 import com.goose.models.Goose;
 import com.goose.models.Hat;
+import com.goose.models.Sessions;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,40 +26,32 @@ public class HatDao extends Dao {
 
 
     //key is not id!!!
-    public HashMap<String, Hat> getHats(String gooseName) throws SQLException {
-        ResultSet rsOfDefaultHats = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus FROM hat WHERE " +
-                "gooseName = 'DEFAULT'");
+    public HashMap<String, Hat> getHats(Sessions session) throws SQLException {
+        ResultSet rsOfDefaultHats = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus " +
+                "FROM hat WHERE sessionName = 'DEFAULT'");
 
         HashMap<String, Hat> hats = new HashMap<String, Hat>();
-
-        int i = 1;
-
-        while (rsOfDefaultHats.next()) {
-            int id = rsOfDefaultHats.getInt("id");
-            String hatName = rsOfDefaultHats.getString("hatName");
-            int hungerBonus = rsOfDefaultHats.getInt("hungerBonus");
-            int hygieneBonus = rsOfDefaultHats.getInt("hygieneBonus");
-            int satisfactionBonus = rsOfDefaultHats.getInt("satisfactionBonus");
-            hats.put(Integer.toString(i), new Hat(id, hatName, hungerBonus, hygieneBonus, satisfactionBonus));
-            i++;
-        }
-
+        putHatsToHashMapFromResultSet(rsOfDefaultHats, hats, 1);
 
         ResultSet rsOfCustomHatsOfGoose = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus " +
-                "FROM hat WHERE gooseName = '" + gooseName + "'");
+                "FROM hat WHERE sessionName = '" + session.getSessionName() + "'");
+
+        putHatsToHashMapFromResultSet(rsOfCustomHatsOfGoose, hats, hats.size() + 1);
+
+        return hats;
+    }
 
 
-        while (rsOfCustomHatsOfGoose.next()) {
-            int id = rsOfCustomHatsOfGoose.getInt("id");
-            String hatName = rsOfCustomHatsOfGoose.getString("hatName");
-            int hungerBonus = rsOfCustomHatsOfGoose.getInt("hungerBonus");
-            int hygieneBonus = rsOfCustomHatsOfGoose.getInt("hygieneBonus");
-            int satisfactionBonus = rsOfCustomHatsOfGoose.getInt("satisfactionBonus");
+    private void putHatsToHashMapFromResultSet(ResultSet rs, HashMap<String, Hat> hats, int i) throws SQLException {
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String hatName = rs.getString("hatName");
+            int hungerBonus = rs.getInt("hungerBonus");
+            int hygieneBonus = rs.getInt("hygieneBonus");
+            int satisfactionBonus = rs.getInt("satisfactionBonus");
             hats.put(Integer.toString(i), new Hat(id, hatName, hungerBonus, hygieneBonus, satisfactionBonus));
             i++;
         }
-
-        return hats;
     }
 
 
@@ -69,9 +62,10 @@ public class HatDao extends Dao {
 //    }
 
 
-    public void insertHat(Hat hat, String gooseName) throws SQLException {
-        upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus, gooseName) VALUE ('" + hat.getName() + "', " +
-                hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", " + hat.getSatisfactionBonus() + ", '" + gooseName + "' )");
+    public void insertHat(Hat hat, Sessions session) throws SQLException {
+        upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus, sessionName) VALUE ('"
+                + hat.getName() + "', " + hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", "
+                + hat.getSatisfactionBonus() + ", '" + session.getSessionName() + "' )");
     }
 
 

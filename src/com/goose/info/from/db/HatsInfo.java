@@ -5,6 +5,7 @@ import com.goose.conection.bd.dao.HatDao;
 import com.goose.models.Food;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
+import com.goose.models.Sessions;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -14,17 +15,17 @@ public class HatsInfo {
     private static HashMap<String, Hat> hats;
     //maybe available hats
 
-    public static synchronized HashMap<String, Hat> getHats(String gooseName) throws SQLException, ClassNotFoundException {
+    public static synchronized HashMap<String, Hat> getHats(Sessions session) throws SQLException, ClassNotFoundException {
 
         if (hats == null)
-            hats =  HatsInfo.inicializeHats(gooseName);
+            hats =  HatsInfo.inicializeHats(session);
 
         return hats;
     }
 
 
-    private static HashMap<String, Hat> inicializeHats(String gooseName) throws SQLException, ClassNotFoundException {
-        return HatDao.getHatDao().getHats(gooseName);
+    private static HashMap<String, Hat> inicializeHats(Sessions session) throws SQLException, ClassNotFoundException {
+        return HatDao.getHatDao().getHats(session);
     }
 
     public static void addHatToHatsHashMap(Hat hat) {

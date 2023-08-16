@@ -44,7 +44,7 @@ public class Console {
     }
 
 
-    public Goose chooseCreateOrContinue() throws SQLException, ClassNotFoundException {
+    public Goose chooseCreateOrContinue(Sessions session) throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
         Goose goose = new Goose();
 
@@ -61,9 +61,10 @@ public class Console {
 
                 goose = new Goose(inp_name, GooseConfig.MAX_HUNGER, GooseConfig.MAX_HUNGER, GooseConfig.MAX_HYGIENE,
                         GooseConfig.MAX_HYGIENE, GooseConfig.MAX_SATISFACTION, GooseConfig.MAX_SATISFACTION,
-                        GooseConfig.MAX_HEALTH, GooseConfig.MAX_HEALTH);
+                        GooseConfig.MAX_HEALTH, GooseConfig.MAX_HEALTH, session);
+                goose.setDefaultHat();
                 System.out.println("Goose is created! \n A description: " + goose.toString());
-                saveNewGooseToBd(goose);
+                saveNewGooseToBd(goose, session);
                 return goose;
 
             } else if(input2.equals("2")) {
@@ -79,9 +80,10 @@ public class Console {
                 goose = new Goose(inp_name, Integer.parseInt(custom_max_hunger), Integer.parseInt(custom_max_hunger),
                         Integer.parseInt(custom_max_hygiene), Integer.parseInt(custom_max_hygiene),
                         Integer.parseInt(custom_max_satisfaction), Integer.parseInt(custom_max_satisfaction),
-                        Integer.parseInt(custom_max_health), Integer.parseInt(custom_max_health)); //types
+                        Integer.parseInt(custom_max_health), Integer.parseInt(custom_max_health), session);
+                goose.setDefaultHat();
                 System.out.println("Goose is created! \n A description: " + goose.toString());
-                saveNewGooseToBd(goose);
+                saveNewGooseToBd(goose, session);
                 return goose;
 
             } else {
@@ -93,8 +95,9 @@ public class Console {
         } else if(input1.equals("2")) {
 
             GooseDao gooseDao = new GooseDao();
-            String selectedGooseName = chooseGoose();
-            goose = gooseDao.getGooseByName(selectedGooseName);
+            String selectedGooseName = chooseGoose(session);
+            goose = gooseDao.getGooseByNameInSuchSession(selectedGooseName, session);
+            goose.setGooseSession(session);
             System.out.println("Goose is found! \n a description: " + goose.toString());
             return goose;
 
@@ -108,7 +111,7 @@ public class Console {
     }
 
 
-    public Action chooseAction(Goose goose) throws SQLException, ClassNotFoundException {
+    public Action chooseAction(Goose goose, Sessions session) throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Hello, happy user, please choose an action: \n 1 - feed goose \n 2 - wash goose " +
@@ -129,7 +132,7 @@ public class Console {
                 String inputHat = scanner.nextLine();
 
                 if (inputHat.equals("1")) {
-                    return new WearingHatAction(chooseHat(goose));
+                    return new WearingHatAction(chooseHat(session));
                 } else if (inputHat.equals("2")) {
 
                     System.out.println("Enter hat name: ");
@@ -143,7 +146,7 @@ public class Console {
 
                     Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
                             Integer.parseInt(satisfaction));
-                    saveHatToDB(newHat, goose);
+                    saveHatToDB(newHat, session);
                     setId(newHat);
                     HatsInfo.addHatToHatsHashMap(newHat);
 
@@ -162,12 +165,12 @@ public class Console {
     }
 
 
-    private String chooseGoose() throws SQLException, ClassNotFoundException {
+    private String chooseGoose(Sessions session) throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Hello, happy user, please choose a goose:");
         GooseDao gooseDao = new GooseDao();
-        HashMap<String, String> geeseNames = gooseDao.getGeeseNames();
+        HashMap<String, String> geeseNames = gooseDao.getGeeseNames(session);
 
         geeseNames.forEach((key, value) -> {
             System.out.print(value + " - " + key + "\n");
@@ -212,11 +215,11 @@ public class Console {
     }
 
 
-    private Hat chooseHat(Goose goose) throws SQLException, ClassNotFoundException {
+    private Hat chooseHat(Sessions session) throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Hello, happy user, please choose an existing hat to wear:");
-        HashMap<String, Hat> hats = HatsInfo.getHats(goose.getName());
+        HashMap<String, Hat> hats = HatsInfo.getHats(session);
 
         hats.forEach((key, value) -> {
             if (key.equals("1")) {
@@ -238,9 +241,9 @@ public class Console {
     }
 
 
-    private void saveNewGooseToBd(Goose goose) throws SQLException, ClassNotFoundException {
+    private void saveNewGooseToBd(Goose goose, Sessions session) throws SQLException, ClassNotFoundException {
         GooseDao gooseDao = new GooseDao();
-        gooseDao.insertGoose(goose);
+        gooseDao.insertGoose(goose, session);
     }
 
 
@@ -250,9 +253,9 @@ public class Console {
     }
 
 
-    private void saveHatToDB(Hat hat, Goose goose) throws SQLException, ClassNotFoundException {
+    private void saveHatToDB(Hat hat, Sessions session) throws SQLException, ClassNotFoundException {
         HatDao hatDao = HatDao.getHatDao();
-        hatDao.insertHat(hat, goose.getName());
+        hatDao.insertHat(hat, session);
     }
 
 

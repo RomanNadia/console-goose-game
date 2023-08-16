@@ -16,22 +16,22 @@ public class Main {
 
         Console console = new Console();
         Sessions session = console.chooseOrCreateSession();
-//        Goose goose = console.chooseCreateOrContinue();
-//        GooseService gooseService = new GooseService();
-//
-//        Date date = new Date();
-//        long timeMilli = date.getTime();
-//
-//        boolean continueProgram = true;
-//
-//
-//        while (continueProgram) {
-//            goose.updateCharacteristics(timeMilli);
-//            //where update (in console)?
-//            timeMilli = date.getTime();
-//            Action action = console.chooseAction(goose);
-//            gooseService.doAction(action, goose);
-//        }
+        Goose goose = console.chooseCreateOrContinue(session);
+        GooseService gooseService = new GooseService();
+
+        Date date = new Date();
+        long timeMilli = date.getTime();
+
+        boolean continueProgram = true;
+
+
+        while (continueProgram) {
+            goose.updateCharacteristics(timeMilli);
+            //where update (in console)?
+            timeMilli = date.getTime();
+            Action action = console.chooseAction(goose, session);
+            gooseService.doAction(action, goose);
+        }
 
 
     }

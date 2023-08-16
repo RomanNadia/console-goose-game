@@ -26,11 +26,12 @@ public class Goose {
 
     private Hat currentHat;
 
+    private Sessions gooseSession;
 
-    //use ???
-    private Hat setDefaultHat() throws SQLException, ClassNotFoundException {
-        HashMap<String, Hat> hats = HatsInfo.getHats(this.name);
-        return hats.get("1");
+
+    public void setDefaultHat() throws SQLException, ClassNotFoundException {
+        HashMap<String, Hat> hats = HatsInfo.getHats(gooseSession);
+        currentHat = hats.get("1");
     }
 
 
@@ -38,7 +39,8 @@ public class Goose {
     }
 
     public Goose(String name, int max_hunger, int current_hunger, int max_hygiene, int current_hygiene,
-                 int max_satisfaction, int current_satisfaction, int max_health, int current_health) throws SQLException, ClassNotFoundException {
+                 int max_satisfaction, int current_satisfaction, int max_health, int current_health,
+                 Sessions gooseSession) throws SQLException, ClassNotFoundException {
         this.name = name;
         this.maxHunger = max_hunger;
         this.currentHunger = current_hunger;
@@ -48,6 +50,7 @@ public class Goose {
         this.currentSatisfaction = current_satisfaction;
         this.maxHealth = max_health;
         this.currentHealth = current_health;
+        this.gooseSession = gooseSession;
     }
 
     public Goose(String name, int maxHunger, int currentHunger, int maxHygiene, int currentHygiene, int maxSatisfaction,
@@ -184,6 +187,14 @@ public class Goose {
 
     public void setCurrentHat(Hat currentHat) {
         this.currentHat = currentHat;
+    }
+
+    public Sessions getGooseSession() {
+        return gooseSession;
+    }
+
+    public void setGooseSession(Sessions gooseSession) {
+        this.gooseSession = gooseSession;
     }
 
     private void starve(long timeMilli) {

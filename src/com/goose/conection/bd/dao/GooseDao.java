@@ -3,6 +3,7 @@ package com.goose.conection.bd.dao;
 import com.goose.info.from.db.HatsInfo;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
+import com.goose.models.Sessions;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +16,8 @@ public class GooseDao extends Dao {
     }
 
 
-    public HashMap<String, String> getGeeseNames() throws SQLException {
-        ResultSet rs = executeQuery("SELECT gooseName FROM goose");
+    public HashMap<String, String> getGeeseNames(Sessions session) throws SQLException {
+        ResultSet rs = executeQuery("SELECT gooseName FROM goose WHERE sessionName = '" + session.getSessionName() + "'");
         HashMap<String, String> geeseNames = new HashMap<String, String>();
         int i = 1;
 
@@ -32,28 +33,27 @@ public class GooseDao extends Dao {
     }
 
 
-    public Goose getGooseByName(String name) throws SQLException, ClassNotFoundException {
+    public Goose getGooseByNameInSuchSession(String name, Sessions session) throws SQLException, ClassNotFoundException {
         ResultSet rs = executeQuery("SELECT maxHunger, currentHunger, maxHygiene, currentHygiene, maxSatisfaction, " +
                 "currentSatisfaction, maxHealth, currentHealth, lastUpdateTime, currentHatId FROM goose WHERE " +
-                "gooseName = '" + name + "'");
-        HashMap<String, Hat> hats = HatsInfo.getHats(name);
+                "gooseName = '" + name + "' AND sessionName = '" + session.getSessionName() + "'");
         rs.next();
         return new Goose(name, rs.getInt("maxHunger"),
                 rs.getInt("currentHunger"), rs.getInt("maxHygiene"),
                 rs.getInt("currentHygiene"), rs.getInt("maxSatisfaction"),
                 rs.getInt("currentSatisfaction"), rs.getInt("maxHealth"),
                 rs.getInt("currentHealth"), rs.getLong("lastUpdateTime"),
-                getCurrentHat(rs.getInt("currentHatId"), name));
+                getCurrentHat(rs.getInt("currentHatId"), session));
     }
 
 
-    public void insertGoose(Goose goose) throws SQLException {
+    public void insertGoose(Goose goose, Sessions session) throws SQLException {
         upsert("INSERT INTO goose (gooseName, maxHunger, currentHunger, maxHygiene, currentHygiene, " +
-                "maxSatisfaction, currentSatisfaction, maxHealth, currentHealth, lastUpdateTime) VALUE ('"
+                "maxSatisfaction, currentSatisfaction, maxHealth, currentHealth, lastUpdateTime, sessionName) VALUE ('"
                 + goose.getName() + "', " + goose.getMaxHunger() + ", " +  goose.getCurrentHunger() + ", "
                 + goose.getMaxHygiene() + ", " + goose.getCurrentHygiene() + ", " +  goose.getMaxSatisfaction() + ", "
                 + goose.getCurrentSatisfaction() + ", " + goose.getMaxHealth() + ", " +  goose.getCurrentHealth() + ", "
-                + goose.getLastUpdateTime() + ")");
+                + goose.getLastUpdateTime() + ", '" + session.getSessionName() + "')");
     }
 
 
@@ -67,8 +67,8 @@ public class GooseDao extends Dao {
     }
 
 
-    private Hat getCurrentHat(int HatId, String gooseName) throws SQLException, ClassNotFoundException {
-        HashMap<String, Hat> hats = HatsInfo.getHats(gooseName);
+    private Hat getCurrentHat(int HatId, Sessions session) throws SQLException, ClassNotFoundException {
+        HashMap<String, Hat> hats = HatsInfo.getHats(session);
         Hat currentHat = hats.get("1");
 
         for(Entry<String, Hat> entry: hats.entrySet()) {
