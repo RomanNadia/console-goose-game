@@ -72,8 +72,7 @@ public class HatDao extends Dao {
     public int findHatIdByName(String hatName) throws SQLException {
         ResultSet rs = executeQuery("SELECT id from hat WHERE hatName = '" + hatName + "'");
         rs.next();
-        int id = rs.getInt("id");
-        return id;
+        return rs.getInt("id");
     }
 
 

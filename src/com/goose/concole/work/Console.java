@@ -15,7 +15,7 @@ import com.goose.models.Food;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
 import com.goose.models.Sessions;
-import com.mysql.cj.Session;
+import com.goose.validator.Validator;
 
 public class Console {
 
@@ -63,7 +63,7 @@ public class Console {
                         GooseConfig.MAX_HYGIENE, GooseConfig.MAX_SATISFACTION, GooseConfig.MAX_SATISFACTION,
                         GooseConfig.MAX_HEALTH, GooseConfig.MAX_HEALTH, session);
                 goose.setDefaultHat();
-                System.out.println("Goose is created! \n A description: " + goose.toString());
+                System.out.println("Goose is created! \n A description: " + goose);
                 saveNewGooseToBd(goose, session);
                 return goose;
 
@@ -82,7 +82,7 @@ public class Console {
                         Integer.parseInt(custom_max_satisfaction), Integer.parseInt(custom_max_satisfaction),
                         Integer.parseInt(custom_max_health), Integer.parseInt(custom_max_health), session);
                 goose.setDefaultHat();
-                System.out.println("Goose is created! \n A description: " + goose.toString());
+                System.out.println("Goose is created! \n A description: " + goose);
                 saveNewGooseToBd(goose, session);
                 return goose;
 
@@ -98,7 +98,7 @@ public class Console {
             String selectedGooseName = chooseGoose(session);
             goose = gooseDao.getGooseByNameInSuchSession(selectedGooseName, session);
             goose.setGooseSession(session);
-            System.out.println("Goose is found! \n a description: " + goose.toString());
+            System.out.println("Goose is found! \n a description: " + goose);
             return goose;
 
         } else {
@@ -120,10 +120,9 @@ public class Console {
 
 
             if (input.equals("1")) {
-                FeedingAction feedingAction = new FeedingAction(chooseFood());
-                return feedingAction;
+                return new FeedingAction(chooseFood());
             } else if (input.equals("2")) {
-                DetergentDao detergentDao = new DetergentDao();
+
             } else if (input.equals("3")) {
 
             } else if (input.equals("4")) {
@@ -135,14 +134,16 @@ public class Console {
                     return new WearingHatAction(chooseHat(session));
                 } else if (inputHat.equals("2")) {
 
+
                     System.out.println("Enter hat name: ");
                     String hatName = scanner.nextLine();
-                    System.out.println("Enter nutrition: ");
-                    String nutrition = scanner.nextLine();
-                    System.out.println("Enter washing level: ");
-                    String washingLevel = scanner.nextLine();
-                    System.out.println("Enter satisfaction: ");
-                    String satisfaction = scanner.nextLine();
+
+
+                    String nutrition = getCorrectInput("Enter nutrition", goose);
+
+                    String washingLevel = getCorrectInput("Enter washing level", goose);
+
+                    String satisfaction = getCorrectInput("Enter satisfaction", goose);
 
                     Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
                             Integer.parseInt(satisfaction));
@@ -265,5 +266,21 @@ public class Console {
         hat.setId(id);
     }
 
+
+    private String getCorrectInput(String output, Goose goose) {
+        Scanner scanner = new Scanner(System.in);
+        Validator validator = new Validator();
+        String ifMistake = "";
+        String input;
+
+        do {
+            System.out.println(output + ifMistake + ": ");
+            input = scanner.nextLine();
+            ifMistake = " again (DUDE, YOU ENTERED WRONG INPUT! it must be integer not bigger then "
+                    + validator.getHatCharacteristicsCoefficient() * 100 + "% of relevant characteristic of goose)";
+        } while (!validator.validateHatCharacteristics(input, goose));
+
+        return input;
+    }
 
 }
