@@ -29,6 +29,8 @@ public class Goose {
 
     private Sessions gooseSession;
 
+    private int gooseCoins;
+
 
     public void setDefaultHat() throws SQLException, ClassNotFoundException {
         HashMap<String, Hat> hats = HatsInfo.getHats(gooseSession);
@@ -67,6 +69,7 @@ public class Goose {
         this.currentHealth = currentHealth;
         this.lastUpdateTime = lastUpdateTime;
         this.currentHat = currentHat;
+        gooseCoins = 100;
     }
 
     @Override
@@ -196,6 +199,14 @@ public class Goose {
 
     public void setGooseSession(Sessions gooseSession) {
         this.gooseSession = gooseSession;
+    }
+
+    public int getGooseCoins() {
+        return gooseCoins;
+    }
+
+    public void setGooseCoins(int gooseCoins) {
+        this.gooseCoins = gooseCoins;
     }
 
     private void starve(long timeMilli) {

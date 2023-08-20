@@ -138,12 +138,16 @@ public class Console {
                     System.out.println("Enter hat name: ");
                     String hatName = scanner.nextLine();
 
+                    System.out.println("Every point costs " + GooseConfig.COST_OF_HAT_POINS + " gooseCoins!");
 
                     String nutrition = getCorrectInput("Enter nutrition", goose);
+                    reduceGooseCoins(nutrition, goose);
 
                     String washingLevel = getCorrectInput("Enter washing level", goose);
+                    reduceGooseCoins(washingLevel, goose);
 
                     String satisfaction = getCorrectInput("Enter satisfaction", goose);
+                    reduceGooseCoins(satisfaction, goose);
 
                     Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
                             Integer.parseInt(satisfaction));
@@ -273,6 +277,7 @@ public class Console {
         String ifMistake = "";
         String input;
 
+        System.out.println("Your balance: " + goose.getGooseCoins() + " gooseCoins");
         do {
             System.out.println(output + ifMistake + ": ");
             input = scanner.nextLine();
@@ -281,6 +286,11 @@ public class Console {
         } while (!validator.validateHatCharacteristics(input, goose));
 
         return input;
+    }
+
+    private void reduceGooseCoins(String characteristicPoints, Goose goose) {
+        int cost = Integer.valueOf(characteristicPoints) * GooseConfig.COST_OF_HAT_POINS;
+        goose.setGooseCoins(goose.getGooseCoins() - cost);
     }
 
 }

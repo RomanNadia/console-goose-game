@@ -1,5 +1,6 @@
 package com.goose.validator;
 
+import com.goose.config.GooseConfig;
 import com.goose.models.Goose;
 
 public class Validator {
@@ -14,16 +15,26 @@ public class Validator {
 
     public boolean validateHatCharacteristics(String characteristic, Goose goose) {
         if(isStringInt(characteristic)) {
-            if(goose.getMaxHunger() * HatCharacteristicsCoefficient >= Integer.valueOf(characteristic)) {
+            int characteristicInt = Integer.valueOf(characteristic);
+            if(goose.getMaxHunger() * HatCharacteristicsCoefficient >= characteristicInt &&
+                    isEnoughGooseCoins(characteristicInt, goose)) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            return false;
+            return false;  //exeptions
         }
     }
 
+
+    private boolean isEnoughGooseCoins(int characteristic, Goose goose) {
+        if(characteristic * GooseConfig.COST_OF_HAT_POINS <= goose.getGooseCoins()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private boolean isStringInt(String string) {
         return string.matches("\\d+");
