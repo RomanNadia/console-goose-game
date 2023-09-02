@@ -1,6 +1,6 @@
 package com.goose.models;
 
-import com.goose.config.GooseConfig;
+import com.goose.config.AplicationConfig;
 import com.goose.info.from.db.HatsInfo;
 
 import java.sql.SQLException;
@@ -34,7 +34,7 @@ public class Goose {
 
     public void setDefaultHat() throws SQLException, ClassNotFoundException {
         HashMap<String, Hat> hats = HatsInfo.getHats(gooseSession);
-        currentHat = hats.get(GooseConfig.ID_OF_DEFAULT_CURRENT_HAT);
+        currentHat = hats.get(AplicationConfig.ID_OF_DEFAULT_CURRENT_HAT);
     }
 
 

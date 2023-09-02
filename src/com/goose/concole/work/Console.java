@@ -8,16 +8,25 @@ import com.goose.concole.work.actions.Action;
 import com.goose.concole.work.actions.FeedingAction;
 import com.goose.concole.work.actions.WearingHatAction;
 import com.goose.conection.bd.dao.*;
-import com.goose.config.GooseConfig;
+import com.goose.config.AplicationConfig;
 import com.goose.info.from.db.FoodsInfo;
 import com.goose.info.from.db.HatsInfo;
 import com.goose.models.Food;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
 import com.goose.models.Sessions;
-import com.goose.validator.Validator;
+import com.goose.validation.*;
+import com.goose.validation.validator.ActionValidator;
+import com.goose.validation.validator.GooseValidator;
+import com.goose.validation.validator.HatValidator;
+import com.goose.validation.validator.SessionValidator;
 
 public class Console {
+    private Scanner scanner = new Scanner(System.in);
+    private HatValidator hatValidator = new HatValidator();
+    private SessionValidator sessionValidator = new SessionValidator();
+    private GooseValidator gooseValidator = new GooseValidator();
+    private ActionValidator actionValidator = new ActionValidator();
 
 
     public Console() {
@@ -25,16 +34,13 @@ public class Console {
 
 
     public Sessions chooseOrCreateSession() throws SQLException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
         Sessions session = new Sessions();
 
-        System.out.println("Hello, happy user, please choose an action: \n 1 - create new session \n 2 - continue with " +
-                "existed session");
-        String input = scanner.nextLine();
+        String input = getCorrectAction("Hello, happy user, please choose an action: \n 1 - create new session " +
+                "\n 2 - continue with existed session", 2);
 
         if(input.equals("1")) {
-            System.out.println("Enter session name: ");               //cheak if sseasion with such name already exist
-            String sessionName = scanner.nextLine();
+            String sessionName = getCorrectNewSessionName("Enter session name");
             session.setSessionName(sessionName);
             saveNewSessionToBd(session);
         } else if(input.equals("2")) {
@@ -45,23 +51,21 @@ public class Console {
 
 
     public Goose chooseCreateOrContinue(Sessions session) throws SQLException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
         Goose goose = new Goose();
 
-        System.out.println("Hello, happy user, please choose an action: \n 1 - create new goose \n 2 - continue with " +
-                "existed goose");
-        String input1 = scanner.nextLine();
+        String input1 = getCorrectAction("Hello, happy user, please choose an action: \n 1 - create new goose " +
+                "\n 2 - continue with existed goose", 2);
 
         if(input1.equals("1")) {
-            System.out.println("Enter goose name: ");
-            String inp_name = scanner.nextLine();                               // check if goose with such name exist
-            System.out.println("Happy user, do you want default characteristics or custom: \n 1 - default \n 2 - custom");
-            String input2 = scanner.nextLine();
+            String inp_name = getCorrectNewGooseName("Enter goose name", session);
+
+            String input2 = getCorrectAction("Happy user, do you want default characteristics or custom: " +
+                    "\n 1 - default \n 2 - custom", 2);
             if(input2.equals("1")) {
 
-                goose = new Goose(inp_name, GooseConfig.MAX_HUNGER, GooseConfig.MAX_HUNGER, GooseConfig.MAX_HYGIENE,
-                        GooseConfig.MAX_HYGIENE, GooseConfig.MAX_SATISFACTION, GooseConfig.MAX_SATISFACTION,
-                        GooseConfig.MAX_HEALTH, GooseConfig.MAX_HEALTH, session);
+                goose = new Goose(inp_name, AplicationConfig.MAX_HUNGER, AplicationConfig.MAX_HUNGER, AplicationConfig.MAX_HYGIENE,
+                        AplicationConfig.MAX_HYGIENE, AplicationConfig.MAX_SATISFACTION, AplicationConfig.MAX_SATISFACTION,
+                        AplicationConfig.MAX_HEALTH, AplicationConfig.MAX_HEALTH, session);
                 goose.setDefaultHat();
                 System.out.println("Goose is created! \n A description: " + goose);
                 saveNewGooseToBd(goose, session);
@@ -86,12 +90,8 @@ public class Console {
                 saveNewGooseToBd(goose, session);
                 return goose;
 
-            } else {
-                // redo
-                System.out.println("Please try again: ");
-                input2 = scanner.nextLine();
-
             }
+            
         } else if(input1.equals("2")) {
 
             GooseDao gooseDao = new GooseDao();
@@ -101,23 +101,17 @@ public class Console {
             System.out.println("Goose is found! \n a description: " + goose);
             return goose;
 
-        } else {
-            //redo
-            System.out.println("Please try again: ");
-            input1 = scanner.nextLine();
-
         }
+
         return goose;
     }
 
 
     public Action chooseAction(Goose goose, Sessions session) throws SQLException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Hello, happy user, please choose an action: \n 1 - feed goose \n 2 - wash goose " +
-                "\n 3 - interact with goose \n 4 - choose hat for goose \n 5 - check goose state \n 6 - save and stop");
-        String input = scanner.nextLine();
-
+        String input = getCorrectAction("Hello, happy user, please choose an action: \n 1 - feed goose " +
+                "\n 2 - wash goose \n 3 - interact with goose \n 4 - choose hat for goose \n 5 - check goose state " +
+                "\n 6 - save and stop", 6);
 
             if (input.equals("1")) {
                 return new FeedingAction(chooseFood());
@@ -128,7 +122,8 @@ public class Console {
             } else if (input.equals("4")) {
 
                 System.out.println("Happy user, please choose an action: \n 1 - chose existing hat \n 2 - custom a new hat");
-                String inputHat = scanner.nextLine();
+                String inputHat = getCorrectAction("Happy user, please choose an action: \n 1 - chose existing hat " +
+                        "\n 2 - custom a new hat", 2);
 
                 if (inputHat.equals("1")) {
                     return new WearingHatAction(chooseHat(session));
@@ -138,15 +133,17 @@ public class Console {
                     System.out.println("Enter hat name: ");
                     String hatName = scanner.nextLine();
 
-                    System.out.println("Every point costs " + GooseConfig.COST_OF_HAT_POINS + " gooseCoins!");
+                    System.out.println("Every point costs " + AplicationConfig.COST_OF_HAT_POINS + " gooseCoins!");
 
-                    String nutrition = getCorrectInput("Enter nutrition", goose);
+                    ValidatingFunction validatingFunction = hatValidator::validateHatCharacteristics;
+                    String nutrition = getCorrectInput("Enter nutrition", goose, validatingFunction); //rename
                     reduceGooseCoins(nutrition, goose);
 
-                    String washingLevel = getCorrectInput("Enter washing level", goose);
+
+                    String washingLevel = getCorrectInput("Enter washing level", goose, validatingFunction);
                     reduceGooseCoins(washingLevel, goose);
 
-                    String satisfaction = getCorrectInput("Enter satisfaction", goose);
+                    String satisfaction = getCorrectInput("Enter satisfaction", goose, validatingFunction);
                     reduceGooseCoins(satisfaction, goose);
 
                     Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
@@ -162,17 +159,13 @@ public class Console {
             } else if (input.equals("6")) {
                 saveGooseChangesToBd(goose);
                 System.exit(0);
-            } else {
-                System.out.println("Please try again: ");
             }
 
-        return new Action(); // Exeption or default action for next check
+        return new Action();
     }
 
 
     private String chooseGoose(Sessions session) throws SQLException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.println("Hello, happy user, please choose a goose:");
         GooseDao gooseDao = new GooseDao();
         HashMap<String, String> geeseNames = gooseDao.getGeeseNames(session);
@@ -188,9 +181,7 @@ public class Console {
 
 
     private Sessions chooseSession() throws SQLException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Hello, happy user, please choose a session:");
+       System.out.println("Hello, happy user, please choose a session:");
         SessionDao sessionDao = SessionDao.getSessionDao();
         HashMap<String, Sessions> sessionsNames = sessionDao.getSessionsNames();
 
@@ -205,8 +196,6 @@ public class Console {
 
 
     private Food chooseFood() throws SQLException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.println("Hello, happy user, please choose a food:");
         HashMap<String, Food> foods = FoodsInfo.getFoods();
 
@@ -221,8 +210,6 @@ public class Console {
 
 
     private Hat chooseHat(Sessions session) throws SQLException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.println("Hello, happy user, please choose an existing hat to wear:");
         HashMap<String, Hat> hats = HatsInfo.getHats(session);
 
@@ -271,26 +258,66 @@ public class Console {
     }
 
 
-    private String getCorrectInput(String output, Goose goose) {
-        Scanner scanner = new Scanner(System.in);
-        Validator validator = new Validator();
+    private String getCorrectInput(String output, Goose goose, ValidatingFunction validatingFunction) {
         String ifMistake = "";
         String input;
+        ValidationInfo validationInfo;
 
         System.out.println("Your balance: " + goose.getGooseCoins() + " gooseCoins");
         do {
             System.out.println(output + ifMistake + ": ");
             input = scanner.nextLine();
-            ifMistake = " again (DUDE, YOU ENTERED WRONG INPUT! it must be integer not bigger then "
-                    + validator.getHatCharacteristicsCoefficient() * 100 + "% of relevant characteristic of goose)";
-        } while (!validator.validateHatCharacteristics(input, goose));
+
+//            validationInfo = validator.validateHatCharacteristics(input, goose);
+            validationInfo = validatingFunction.validate(input, goose);
+            ifMistake = " again (DUDE, YOU ENTERED WRONG INPUT! " + validationInfo.getFalseValidationMessage() + ")";
+        } while (!validationInfo.getValidationStatus());
 
         return input;
     }
 
     private void reduceGooseCoins(String characteristicPoints, Goose goose) {
-        int cost = Integer.valueOf(characteristicPoints) * GooseConfig.COST_OF_HAT_POINS;
+        int cost = Integer.valueOf(characteristicPoints) * AplicationConfig.COST_OF_HAT_POINS;
         goose.setGooseCoins(goose.getGooseCoins() - cost);
     }
 
+    private String getCorrectNewSessionName(String output) throws SQLException, ClassNotFoundException {
+        String ifMistake = "";
+        String input;
+
+        do {
+            System.out.println(output + ifMistake + ": ");
+            input = scanner.nextLine();
+            ifMistake = " again (entered name already exist)";
+        } while (!sessionValidator.validateSessionName(input));
+
+        return input;
+    }
+
+    private String getCorrectNewGooseName(String output, Sessions session) throws SQLException, ClassNotFoundException {
+        String ifMistake = "";
+        String input;
+
+        do {
+            System.out.println(output + ifMistake + ": ");
+            input = scanner.nextLine();
+            ifMistake = " again (entered name already exist)";
+        } while (!gooseValidator.validateGooseName(input, session));
+
+        return input;
+    }
+
+
+    private String getCorrectAction(String output, int amountOfOptions) {
+        String ifMistake = "";
+        String input;
+
+        do {
+            System.out.println(output + ifMistake + ": ");
+            input = scanner.nextLine();
+            ifMistake = "\n again (no such option as " + input + ")";
+        } while (!actionValidator.validateActionInput(input, amountOfOptions));
+
+        return input;
+    }
 }

@@ -82,4 +82,11 @@ public class GooseDao extends Dao {
     }
 
 
+    public boolean chekIfGooseNameExist(String name, Sessions session) throws SQLException {
+        ResultSet rs = executeQuery("SELECT * FROM goose WHERE gooseName = '" + name + "' And sessionName = '"
+                + session.getSessionName() + "'");
+        return rs.next();
+    }
+
+
 }

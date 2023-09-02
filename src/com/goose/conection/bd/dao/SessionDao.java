@@ -44,5 +44,10 @@ public class SessionDao extends Dao {
         upsert("INSERT INTO sessions VALUE ('" + session.getSessionName() + "')");
     }
 
+    public boolean chekIfSessionNameExist(String name) throws SQLException {
+        ResultSet rs = executeQuery("SELECT * FROM sessions WHERE sessionName = '" + name + "'");
+        return rs.next();
+    }
+
 
 }
