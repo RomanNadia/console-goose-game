@@ -10,5 +10,8 @@ public class AplicationConfig {
 
     //Hats config
     public static final int COST_OF_HAT_POINS = 20;
+    public static final double HatNutritionCoefficient = 0.2;
+    public static final double HatWashingLevelCoefficient = 0.2;
+    public static final double HatSatisfactionCoefficient = 0.2;
 
 }

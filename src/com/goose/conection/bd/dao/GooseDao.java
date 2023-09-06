@@ -34,16 +34,17 @@ public class GooseDao extends Dao {
 
 
     public Goose getGooseByNameInSuchSession(String name, Sessions session) throws SQLException, ClassNotFoundException {
-        ResultSet rs = executeQuery("SELECT maxHunger, currentHunger, maxHygiene, currentHygiene, maxSatisfaction, " +
-                "currentSatisfaction, maxHealth, currentHealth, lastUpdateTime, currentHatId FROM goose WHERE " +
+        ResultSet rs = executeQuery("SELECT id, maxHunger, currentHunger, maxHygiene, currentHygiene, maxSatisfaction, " +
+                "currentSatisfaction, maxHealth, currentHealth, lastUpdateTime, currentHatId, gooseCoins FROM goose WHERE " +
                 "gooseName = '" + name + "' AND sessionName = '" + session.getSessionName() + "'");
         rs.next();
-        return new Goose(name, rs.getInt("maxHunger"),
+        int gooseId = rs.getInt("id");
+        return new Goose(gooseId, name, rs.getInt("maxHunger"),
                 rs.getInt("currentHunger"), rs.getInt("maxHygiene"),
                 rs.getInt("currentHygiene"), rs.getInt("maxSatisfaction"),
                 rs.getInt("currentSatisfaction"), rs.getInt("maxHealth"),
                 rs.getInt("currentHealth"), rs.getLong("lastUpdateTime"),
-                getCurrentHat(rs.getInt("currentHatId"), session));
+                getCurrentHat(rs.getInt("currentHatId"), gooseId), rs.getInt("gooseCoins"));
     }
 
 
@@ -67,8 +68,8 @@ public class GooseDao extends Dao {
     }
 
 
-    private Hat getCurrentHat(int HatId, Sessions session) throws SQLException, ClassNotFoundException {
-        HashMap<String, Hat> hats = HatsInfo.getHats(session);
+    private Hat getCurrentHat(int HatId, int gooseId) throws SQLException, ClassNotFoundException {
+        HashMap<String, Hat> hats = HatsInfo.getAvailableHats(gooseId);
         Hat currentHat = hats.get("1");
 
         for(Entry<String, Hat> entry: hats.entrySet()) {
@@ -86,6 +87,14 @@ public class GooseDao extends Dao {
         ResultSet rs = executeQuery("SELECT * FROM goose WHERE gooseName = '" + name + "' And sessionName = '"
                 + session.getSessionName() + "'");
         return rs.next();
+    }
+
+
+    public int findGooseId(Goose goose, Sessions session) throws SQLException {
+        ResultSet rs = executeQuery("SELECT id from goose WHERE gooseName = '" + goose.getName() + "' and sessionName = '"
+                + session.getSessionName() + "'");
+        rs.next();
+        return rs.getInt("id");
     }
 
 

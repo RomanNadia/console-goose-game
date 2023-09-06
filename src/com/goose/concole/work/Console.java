@@ -22,15 +22,15 @@ import com.goose.validation.validator.HatValidator;
 import com.goose.validation.validator.SessionValidator;
 
 public class Console {
-    private Scanner scanner = new Scanner(System.in);
-    private HatValidator hatValidator = new HatValidator();
-    private SessionValidator sessionValidator = new SessionValidator();
-    private GooseValidator gooseValidator = new GooseValidator();
-    private ActionValidator actionValidator = new ActionValidator();
+    private final Scanner scanner = new Scanner(System.in);
+    private final HatValidator hatValidator = new HatValidator();
+    private final SessionValidator sessionValidator = new SessionValidator();
+    private final GooseValidator gooseValidator = new GooseValidator();
+    private final ActionValidator actionValidator = new ActionValidator();
 
 
-    public Console() {
-    }
+//    public Console() {
+//    }
 
 
     public Sessions chooseOrCreateSession() throws SQLException, ClassNotFoundException {
@@ -66,9 +66,11 @@ public class Console {
                 goose = new Goose(inp_name, AplicationConfig.MAX_HUNGER, AplicationConfig.MAX_HUNGER, AplicationConfig.MAX_HYGIENE,
                         AplicationConfig.MAX_HYGIENE, AplicationConfig.MAX_SATISFACTION, AplicationConfig.MAX_SATISFACTION,
                         AplicationConfig.MAX_HEALTH, AplicationConfig.MAX_HEALTH, session);
-                goose.setDefaultHat();
-                System.out.println("Goose is created! \n A description: " + goose);
+
                 saveNewGooseToBd(goose, session);
+                setIdForGooseFromBD(goose, session);
+
+                System.out.println("Goose is created! \n A description: " + goose);
                 return goose;
 
             } else if(input2.equals("2")) {
@@ -85,13 +87,12 @@ public class Console {
                         Integer.parseInt(custom_max_hygiene), Integer.parseInt(custom_max_hygiene),
                         Integer.parseInt(custom_max_satisfaction), Integer.parseInt(custom_max_satisfaction),
                         Integer.parseInt(custom_max_health), Integer.parseInt(custom_max_health), session);
-                goose.setDefaultHat();
                 System.out.println("Goose is created! \n A description: " + goose);
                 saveNewGooseToBd(goose, session);
                 return goose;
 
             }
-            
+
         } else if(input1.equals("2")) {
 
             GooseDao gooseDao = new GooseDao();
@@ -121,38 +122,42 @@ public class Console {
 
             } else if (input.equals("4")) {
 
-                System.out.println("Happy user, please choose an action: \n 1 - chose existing hat \n 2 - custom a new hat");
                 String inputHat = getCorrectAction("Happy user, please choose an action: \n 1 - chose existing hat " +
-                        "\n 2 - custom a new hat", 2);
+                        "\n 2 - custom a new hat \n 3 - bay hat in session", 3);
 
                 if (inputHat.equals("1")) {
-                    return new WearingHatAction(chooseHat(session));
+                    return new WearingHatAction(chooseAvailebleHat(goose.getGooseId()));
                 } else if (inputHat.equals("2")) {
 
-
-                    System.out.println("Enter hat name: ");
-                    String hatName = scanner.nextLine();
+                    String hatName = getCorrectNewHatName("Enter hat name", session);
 
                     System.out.println("Every point costs " + AplicationConfig.COST_OF_HAT_POINS + " gooseCoins!");
 
-                    ValidatingFunction validatingFunction = hatValidator::validateHatCharacteristics;
-                    String nutrition = getCorrectInput("Enter nutrition", goose, validatingFunction); //rename
+                    String nutrition = getCorrectHatCharacteristic("Enter nutrition", goose, goose.getMaxHunger(),
+                            AplicationConfig.HatNutritionCoefficient);
                     reduceGooseCoins(nutrition, goose);
 
-
-                    String washingLevel = getCorrectInput("Enter washing level", goose, validatingFunction);
+                    String washingLevel = getCorrectHatCharacteristic("Enter washing level", goose,
+                            goose.getMaxHygiene(), AplicationConfig.HatWashingLevelCoefficient);
                     reduceGooseCoins(washingLevel, goose);
 
-                    String satisfaction = getCorrectInput("Enter satisfaction", goose, validatingFunction);
+                    String satisfaction = getCorrectHatCharacteristic("Enter satisfaction", goose,
+                            goose.getMaxSatisfaction(), AplicationConfig.HatSatisfactionCoefficient);
                     reduceGooseCoins(satisfaction, goose);
 
                     Hat newHat = new Hat(hatName, Integer.parseInt(nutrition), Integer.parseInt(washingLevel),
                             Integer.parseInt(satisfaction));
                     saveHatToDB(newHat, session);
-                    setId(newHat);
-                    HatsInfo.addHatToHatsHashMap(newHat);
-
+                    setIdForHat(newHat, session);
+                    saveAsGooseAvalbleHatInBD(newHat, goose);
+                    HatsInfo.addNewHatToAvailableHatsHashMap(newHat);
                     return new WearingHatAction(newHat);
+
+                } else if (inputHat.equals("3")) {
+                    Hat boughtHat = chooseSessionHat(session, goose.getGooseId());
+                    saveAsGooseAvalbleHatInBD(boughtHat, goose);
+                    HatsInfo.addSessionHatToAvailableHatsHashMap(boughtHat);
+                    return new WearingHatAction(boughtHat);
                 }
             } else if (input.equals("5")) {
                 System.out.println(goose.toString());
@@ -209,9 +214,9 @@ public class Console {
     }
 
 
-    private Hat chooseHat(Sessions session) throws SQLException, ClassNotFoundException {
+    private Hat chooseAvailebleHat(int gooseId) throws SQLException, ClassNotFoundException {
         System.out.println("Hello, happy user, please choose an existing hat to wear:");
-        HashMap<String, Hat> hats = HatsInfo.getHats(session);
+        HashMap<String, Hat> hats = HatsInfo.getAvailableHats(gooseId);
 
         hats.forEach((key, value) -> {
             if (key.equals("1")) {
@@ -219,6 +224,20 @@ public class Console {
             } else {
                 System.out.print(value.getName() + " - " + key + "\n");
             }
+        });
+
+        String input = scanner.nextLine();
+
+        return hats.get(input);
+    }
+
+
+    private Hat chooseSessionHat(Sessions session, int gooseId) throws SQLException, ClassNotFoundException {
+        System.out.println("Hello, happy user, please choose hat to bay:");
+        HashMap<String, Hat> hats = HatsInfo.getSessionHats(session, gooseId);
+
+        hats.forEach((key, value) -> {
+            System.out.print(value.getName() + " - " + key + "\n");
         });
 
         String input = scanner.nextLine();
@@ -251,14 +270,27 @@ public class Console {
     }
 
 
-    private void setId(Hat hat) throws SQLException, ClassNotFoundException {
+    private void saveAsGooseAvalbleHatInBD(Hat hat, Goose goose) throws SQLException, ClassNotFoundException {
         HatDao hatDao = HatDao.getHatDao();
-        int id = hatDao.findHatIdByName(hat.getName());
-        hat.setId(id);
+        hatDao.insertGooseHat(hat, goose);
     }
 
 
-    private String getCorrectInput(String output, Goose goose, ValidatingFunction validatingFunction) {
+    private void setIdForHat(Hat hat, Sessions session) throws SQLException, ClassNotFoundException {
+        HatDao hatDao = HatDao.getHatDao();
+        int id = hatDao.findHatIdByName(hat.getName(), session);
+        hat.setId(id);
+    }
+
+    
+    private void setIdForGooseFromBD(Goose goose, Sessions session) throws SQLException, ClassNotFoundException {
+        GooseDao gooseDao = new GooseDao();
+        int id = gooseDao.findGooseId(goose, session);
+        goose.setGooseId(id);
+    }
+    
+    
+    private String getCorrectHatCharacteristic(String output, Goose goose, int maxValue, double coefficient) {
         String ifMistake = "";
         String input;
         ValidationInfo validationInfo;
@@ -268,13 +300,13 @@ public class Console {
             System.out.println(output + ifMistake + ": ");
             input = scanner.nextLine();
 
-//            validationInfo = validator.validateHatCharacteristics(input, goose);
-            validationInfo = validatingFunction.validate(input, goose);
+            validationInfo = hatValidator.validateHatCharacteristics(input, goose.getGooseCoins(), maxValue, coefficient);
             ifMistake = " again (DUDE, YOU ENTERED WRONG INPUT! " + validationInfo.getFalseValidationMessage() + ")";
         } while (!validationInfo.getValidationStatus());
 
         return input;
     }
+
 
     private void reduceGooseCoins(String characteristicPoints, Goose goose) {
         int cost = Integer.valueOf(characteristicPoints) * AplicationConfig.COST_OF_HAT_POINS;
@@ -303,6 +335,20 @@ public class Console {
             input = scanner.nextLine();
             ifMistake = " again (entered name already exist)";
         } while (!gooseValidator.validateGooseName(input, session));
+
+        return input;
+    }
+
+
+    private String getCorrectNewHatName(String output, Sessions session) throws SQLException, ClassNotFoundException {
+        String ifMistake = "";
+        String input;
+
+        do {
+            System.out.println(output + ifMistake + ": ");
+            input = scanner.nextLine();
+            ifMistake = " again (entered name already exist)";
+        } while (!hatValidator.validateHatName(input, session));
 
         return input;
     }

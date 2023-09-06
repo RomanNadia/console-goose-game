@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Goose {
-    //name is a primary key!
+    private int gooseId;
+
     private String name;
 
     private int maxHunger;
@@ -32,9 +33,14 @@ public class Goose {
     private int gooseCoins;
 
 
-    public void setDefaultHat() throws SQLException, ClassNotFoundException {
-        HashMap<String, Hat> hats = HatsInfo.getHats(gooseSession);
+    private void setDefaultHat() throws SQLException, ClassNotFoundException {
+        HashMap<String, Hat> hats = HatsInfo.getAvailableHats(gooseId);
         currentHat = hats.get(AplicationConfig.ID_OF_DEFAULT_CURRENT_HAT);
+    }
+
+
+    private void setDefaultGooseCoins()  {
+        gooseCoins = 100;
     }
 
 
@@ -54,10 +60,14 @@ public class Goose {
         this.maxHealth = max_health;
         this.currentHealth = current_health;
         this.gooseSession = gooseSession;
+        setDefaultHat();
+        setDefaultGooseCoins();
     }
 
-    public Goose(String name, int maxHunger, int currentHunger, int maxHygiene, int currentHygiene, int maxSatisfaction,
-                 int currentSatisfaction, int maxHealth, int currentHealth, long lastUpdateTime, Hat currentHat) throws SQLException, ClassNotFoundException {
+    public Goose(int id, String name, int maxHunger, int currentHunger, int maxHygiene, int currentHygiene, int maxSatisfaction,
+                 int currentSatisfaction, int maxHealth, int currentHealth, long lastUpdateTime, Hat currentHat,
+                 int gooseCoins) throws SQLException, ClassNotFoundException {
+        gooseId = id;
         this.name = name;
         this.maxHunger = maxHunger;
         this.currentHunger = currentHunger;
@@ -69,7 +79,7 @@ public class Goose {
         this.currentHealth = currentHealth;
         this.lastUpdateTime = lastUpdateTime;
         this.currentHat = currentHat;
-        gooseCoins = 100;
+        this.gooseCoins = gooseCoins;
     }
 
     @Override
@@ -207,6 +217,14 @@ public class Goose {
 
     public void setGooseCoins(int gooseCoins) {
         this.gooseCoins = gooseCoins;
+    }
+
+    public int getGooseId() {
+        return gooseId;
+    }
+
+    public void setGooseId(int gooseId) {
+        this.gooseId = gooseId;
     }
 
     private void starve(long timeMilli) {

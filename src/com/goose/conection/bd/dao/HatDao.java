@@ -25,16 +25,30 @@ public class HatDao extends Dao {
     }
 
 
-    //key is not id!!!
-    public HashMap<String, Hat> getHats(Sessions session) throws SQLException {
+//    key is not id!!!
+    public HashMap<String, Hat> getSessionHats(Sessions session, int gooseId) throws SQLException {
+        ResultSet rsOfDefaultHats = executeQuery("SELECT hat.id, hat.hatName, hat.hungerBonus, hat.hygieneBonus, " +
+                "hat.satisfactionBonus FROM hat WHERE hat.sessionName = '" + session.getSessionName()
+                + "' AND hat.id NOT IN (SELECT hat.id FROM hat INNER JOIN hat_goose ON hat.id = hat_goose.hatId " +
+                "WHERE hat_goose.gooseId = " + gooseId + ")");
+
+        HashMap<String, Hat> hats = new HashMap<String, Hat>();
+        putHatsToHashMapFromResultSet(rsOfDefaultHats, hats, 1);
+
+        return hats;
+    }
+
+
+    public HashMap<String, Hat> getAvailableHats(int gooseId) throws SQLException {
         ResultSet rsOfDefaultHats = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus " +
                 "FROM hat WHERE sessionName = 'DEFAULT'");
 
         HashMap<String, Hat> hats = new HashMap<String, Hat>();
         putHatsToHashMapFromResultSet(rsOfDefaultHats, hats, 1);
 
-        ResultSet rsOfCustomHatsOfGoose = executeQuery("SELECT id, hatName, hungerBonus, hygieneBonus, satisfactionBonus " +
-                "FROM hat WHERE sessionName = '" + session.getSessionName() + "'");
+        ResultSet rsOfCustomHatsOfGoose = executeQuery("SELECT hat.id, hat.hatName, hat.hungerBonus, hat.hygieneBonus, " +
+                "hat.satisfactionBonus FROM hat INNER JOIN hat_goose ON hat.id = hat_goose.hatId " +
+                "WHERE hat_goose.gooseId = " + gooseId + "");
 
         putHatsToHashMapFromResultSet(rsOfCustomHatsOfGoose, hats, hats.size() + 1);
 
@@ -69,12 +83,26 @@ public class HatDao extends Dao {
     }
 
 
-    public int findHatIdByName(String hatName) throws SQLException {
-        ResultSet rs = executeQuery("SELECT id from hat WHERE hatName = '" + hatName + "'");
+    public int findHatIdByName(String hatName, Sessions session) throws SQLException {
+        ResultSet rs = executeQuery("SELECT id from hat WHERE hatName = '" + hatName + "' and sessionName = '"
+                + session.getSessionName() + "'");
         rs.next();
         return rs.getInt("id");
     }
 
+
+    //goose_hat
+    public void insertGooseHat(Hat hat, Goose goose) throws SQLException {
+        upsert("INSERT INTO hat_goose (gooseId, hatId) VALUE ("
+                + goose.getGooseId() + ", " + hat.getId()  + " )");
+    }
+
+
+    public boolean chekIfHatNameExistInSession(String name, Sessions session) throws SQLException {
+        ResultSet rs = executeQuery("SELECT * FROM hat WHERE hatName = '" + name + "' And (sessionName = '"
+                + session.getSessionName() + "' OR sessionName = 'DEFAULT')");
+        return rs.next();
+    }
 
 }
 

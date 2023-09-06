@@ -1,35 +1,71 @@
 package com.goose.info.from.db;
 
-import com.goose.conection.bd.dao.FoodDao;
 import com.goose.conection.bd.dao.HatDao;
-import com.goose.models.Food;
 import com.goose.models.Goose;
 import com.goose.models.Hat;
 import com.goose.models.Sessions;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class HatsInfo {
 
-    private static HashMap<String, Hat> hats;
+    private static HashMap<String, Hat> availableHats;
+    private static HashMap<String, Hat> sessionHats;
     //maybe available hats
 
-    public static synchronized HashMap<String, Hat> getHats(Sessions session) throws SQLException, ClassNotFoundException {
+    public static synchronized HashMap<String, Hat> getAvailableHats(int gooseId)
+            throws SQLException, ClassNotFoundException {
 
-        if (hats == null)
-            hats =  HatsInfo.inicializeHats(session);
+        if (availableHats == null)
+            availableHats =  HatsInfo.inicializeAvailableHats(gooseId);
 
-        return hats;
+        return availableHats;
+    }
+
+    public static synchronized HashMap<String, Hat> getSessionHats(Sessions session, int gooseId)
+            throws SQLException, ClassNotFoundException {
+
+        if (sessionHats == null)
+            sessionHats =  HatsInfo.inicializeSessionHats(session, gooseId);
+
+        return sessionHats;
     }
 
 
-    private static HashMap<String, Hat> inicializeHats(Sessions session) throws SQLException, ClassNotFoundException {
-        return HatDao.getHatDao().getHats(session);
+    private static HashMap<String, Hat> inicializeAvailableHats(int gooseId) throws SQLException, ClassNotFoundException {
+        return HatDao.getHatDao().getAvailableHats(gooseId);
     }
 
-    public static void addHatToHatsHashMap(Hat hat) {
-        hats.put(String.valueOf(hats.size()),hat);
+
+    private static HashMap<String, Hat> inicializeSessionHats(Sessions session, int gooseId)
+            throws SQLException, ClassNotFoundException {
+        return HatDao.getHatDao().getSessionHats(session, gooseId);
     }
+
+
+    public static void addNewHatToAvailableHatsHashMap(Hat hat) {
+        availableHats.put(String.valueOf(availableHats.size()),hat);
+    }
+
+    public static void addSessionHatToAvailableHatsHashMap(Hat hat) {
+        availableHats.put(String.valueOf(availableHats.size()),hat);
+        deleteFromSessionHats(hat);
+    }
+
+    private static void deleteFromSessionHats(Hat hat) { ///maybe just check data from bd
+        HashMap<String, Hat> newSessionHats = new HashMap<String, Hat>();
+        int i = 1;
+        for(Map.Entry<String, Hat> entry: sessionHats.entrySet()) {
+            Hat entryValue = entry.getValue();
+            if (entryValue != hat) {
+                newSessionHats.put(String.valueOf(i),entryValue);
+                i++;
+            }
+        }
+        sessionHats = newSessionHats;
+    }
+
 
 }

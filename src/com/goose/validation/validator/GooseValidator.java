@@ -15,4 +15,5 @@ public class GooseValidator extends Validator {
             return true;
         }
     }
+
 }
