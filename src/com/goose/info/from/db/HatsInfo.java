@@ -1,7 +1,6 @@
 package com.goose.info.from.db;
 
 import com.goose.conection.bd.dao.HatDao;
-import com.goose.models.Goose;
 import com.goose.models.Hat;
 import com.goose.models.Sessions;
 
@@ -12,7 +11,7 @@ import java.util.Map;
 public class HatsInfo {
 
     private static HashMap<String, Hat> availableHats;
-    private static HashMap<String, Hat> sessionHats;
+    private static HashMap<String, Hat> availableHatsToBay;          //available to bay
     //maybe available hats
 
     public static synchronized HashMap<String, Hat> getAvailableHats(int gooseId)
@@ -24,13 +23,13 @@ public class HatsInfo {
         return availableHats;
     }
 
-    public static synchronized HashMap<String, Hat> getSessionHats(Sessions session, int gooseId)
+    public static synchronized HashMap<String, Hat> getAvailableHatsToBay(Sessions session, int gooseId)
             throws SQLException, ClassNotFoundException {
 
-        if (sessionHats == null)
-            sessionHats =  HatsInfo.inicializeSessionHats(session, gooseId);
+        if (availableHatsToBay == null)
+            availableHatsToBay =  HatsInfo.inicializeAvailableHatsToBay(session, gooseId);
 
-        return sessionHats;
+        return availableHatsToBay;
     }
 
 
@@ -39,9 +38,9 @@ public class HatsInfo {
     }
 
 
-    private static HashMap<String, Hat> inicializeSessionHats(Sessions session, int gooseId)
+    private static HashMap<String, Hat> inicializeAvailableHatsToBay(Sessions session, int gooseId)
             throws SQLException, ClassNotFoundException {
-        return HatDao.getHatDao().getSessionHats(session, gooseId);
+        return HatDao.getHatDao().getAvailableHatsToBay(session, gooseId);
     }
 
 
@@ -49,22 +48,22 @@ public class HatsInfo {
         availableHats.put(String.valueOf(availableHats.size()),hat);
     }
 
-    public static void addSessionHatToAvailableHatsHashMap(Hat hat) {
+    public static void addAvailableHatsToBayToAvailableHatsHashMap(Hat hat) {
         availableHats.put(String.valueOf(availableHats.size()),hat);
-        deleteFromSessionHats(hat);
+        deleteFromAvailableHatsToBay(hat);
     }
 
-    private static void deleteFromSessionHats(Hat hat) { ///maybe just check data from bd
+    private static void deleteFromAvailableHatsToBay(Hat hat) {
         HashMap<String, Hat> newSessionHats = new HashMap<String, Hat>();
         int i = 1;
-        for(Map.Entry<String, Hat> entry: sessionHats.entrySet()) {
+        for(Map.Entry<String, Hat> entry: availableHatsToBay.entrySet()) {
             Hat entryValue = entry.getValue();
             if (entryValue != hat) {
                 newSessionHats.put(String.valueOf(i),entryValue);
                 i++;
             }
         }
-        sessionHats = newSessionHats;
+        availableHatsToBay = newSessionHats;
     }
 
 

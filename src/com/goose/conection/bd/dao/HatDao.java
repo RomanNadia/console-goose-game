@@ -26,7 +26,7 @@ public class HatDao extends Dao {
 
 
 //    key is not id!!!
-    public HashMap<String, Hat> getSessionHats(Sessions session, int gooseId) throws SQLException {
+    public HashMap<String, Hat> getAvailableHatsToBay(Sessions session, int gooseId) throws SQLException {
         ResultSet rsOfDefaultHats = executeQuery("SELECT hat.id, hat.hatName, hat.hungerBonus, hat.hygieneBonus, " +
                 "hat.satisfactionBonus FROM hat WHERE hat.sessionName = '" + session.getSessionName()
                 + "' AND hat.id NOT IN (SELECT hat.id FROM hat INNER JOIN hat_goose ON hat.id = hat_goose.hatId " +

@@ -6,7 +6,7 @@ import com.goose.models.Goose;
 //import java.io.Console;
 import java.sql.SQLException;
 import java.util.Date;
-import com.goose.concole.work.Console;
+import com.goose.concole.work.concole.classes.MainConsole;
 import com.goose.models.Sessions;
 import com.goose.services.GooseService;
 
@@ -14,21 +14,24 @@ import com.goose.services.GooseService;
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-        Console console = new Console();
+        MainConsole console = new MainConsole();
         Sessions session = console.chooseOrCreateSession();
         Goose goose = console.chooseCreateOrContinue(session);
         GooseService gooseService = new GooseService();
 
         Date date = new Date();
-        long timeMilli = date.getTime();
+//        long timeMilli = date.getTime();
+
+        goose.setLastUpdateTime(date.getTime());
 
         boolean continueProgram = true;
 
 
         while (continueProgram) {
-            goose.updateCharacteristics(timeMilli);
+//            timeMilli = date.getTime();
+//            goose.updateCharacteristics(timeMilli);
             //where update (in console)?
-            timeMilli = date.getTime();
+            goose.updateCharacteristics();
             Action action = console.chooseAction(goose, session);
             gooseService.doAction(action, goose);
         }

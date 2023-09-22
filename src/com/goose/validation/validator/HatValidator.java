@@ -24,10 +24,10 @@ public class HatValidator extends Validator {
                 if(isEnoughGooseCoins(characteristicInt, gooseCoins)) {
                     return new ValidationInfo(false,"You cross the limit for characteristic");
                 } else if(maxValue * coefficient >= characteristicInt) {
-                    return new ValidationInfo(false,"You dont have enough goose coins");
+                    return new ValidationInfo(false,"You don`t have enough goose coins");
                 } else {
                     return new ValidationInfo(false,"You cross the limit for " +
-                            "characteristic and you dont have enough goose coins");
+                            "characteristic and you don`t have enough goose coins");
                 }
             }
         } else {

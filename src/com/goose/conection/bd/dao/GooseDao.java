@@ -64,7 +64,8 @@ public class GooseDao extends Dao {
                 + goose.getCurrentHygiene() + ", maxSatisfaction = " + goose.getMaxSatisfaction()
                 + ", currentSatisfaction = " + goose.getCurrentSatisfaction() + ", maxHealth = " + goose.getMaxHealth()
                 + ", currentHealth = " +  goose.getCurrentHealth() + ", lastUpdateTime = " + goose.getLastUpdateTime()
-                + ", currentHatId = " + goose.getCurrentHat().getId() + " WHERE gooseName = '" + goose.getName() + "'");
+                + ", currentHatId = " + goose.getCurrentHat().getId() + ", gooseCoins = " + goose.getGooseCoins()
+                + " WHERE gooseName = '" + goose.getName() + "'");
     }
 
 

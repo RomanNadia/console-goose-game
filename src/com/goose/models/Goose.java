@@ -110,8 +110,8 @@ public class Goose {
     }
 
 
-    public void updateCharacteristics(long timeMilli) {
-        starve(timeMilli);
+    public void updateCharacteristics() {
+        starve();
         //gigiene satisfaction
     }
 
@@ -227,14 +227,15 @@ public class Goose {
         this.gooseId = gooseId;
     }
 
-    private void starve(long timeMilli) {
+    private void starve() {
         Date date = new Date();
         long timeMilliNow = date.getTime();
-        currentHunger = (int)((long)currentHealth - (((timeMilliNow - timeMilli)/10000) * 5));
+        currentHunger = (int)((long)currentHunger - (((timeMilliNow - lastUpdateTime)/10000) * 5));  //double
         if(currentHunger <= 0) {
             currentHunger = 0;
             //shrink health
         }
+        lastUpdateTime = timeMilliNow;
     }
 
     private void takeOffHat() {

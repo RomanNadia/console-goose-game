@@ -3,6 +3,7 @@ package com.goose.services;
 import com.goose.concole.work.actions.Action;
 import com.goose.concole.work.actions.FeedingAction;
 import com.goose.concole.work.actions.WearingHatAction;
+import com.goose.concole.work.actions.WorkAction;
 import com.goose.models.Food;
 import com.goose.models.Goose;
 
@@ -24,6 +25,8 @@ public class GooseService {
 
         } else if (actionClass == WearingHatAction.class) {
             goose.wearHat(((WearingHatAction) action).getHat());
+        } else if (actionClass == WorkAction.class) {
+            goose.setGooseCoins(((WorkAction) action).getNewGooseCoins());
         }
     }
 
