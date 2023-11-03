@@ -2,14 +2,8 @@ package com.goose.concole.work.concole.classes;
 
 import java.sql.SQLException;
 
-import com.goose.concole.work.actions.Action;
-import com.goose.concole.work.actions.FeedingAction;
-import com.goose.concole.work.actions.WearingHatAction;
-import com.goose.concole.work.actions.WorkAction;
-import com.goose.config.AplicationConfig;
-import com.goose.info.from.db.HatsInfo;
+import com.goose.concole.work.actions.*;
 import com.goose.models.Goose;
-import com.goose.models.Hat;
 import com.goose.models.Sessions;
 
 public class MainConsole extends BaseConsole {
@@ -17,6 +11,8 @@ public class MainConsole extends BaseConsole {
     private final SessionConsole sessionConsole = new SessionConsole();
     private final GooseConsole gooseConsole = new GooseConsole();
     private final FoodConsole foodConsole = new FoodConsole();
+    private final DetergentConsole detergentConsole = new DetergentConsole();
+    private final ActivityConsole activityConsole = new ActivityConsole();
     private final HatConsole hatConsole = new HatConsole();
 
     public Sessions chooseOrCreateSession() throws SQLException, ClassNotFoundException {
@@ -38,33 +34,23 @@ public class MainConsole extends BaseConsole {
 
 
     public Goose chooseCreateOrContinue(Sessions session) throws SQLException, ClassNotFoundException {
-        Goose goose = new Goose();
+        Goose goose;
 
         String input1 = getCorrectAction("Hello, happy user, please choose an action: \n 1 - create new goose " +
                 "\n 2 - continue with existed goose", 2);
 
         if(input1.equals("1")) {
-            String inp_name = gooseConsole.getCorrectNewGooseName("Enter goose name", session);
-
-            String input2 = getCorrectAction("Happy user, do you want default characteristics or custom: " +
-                    "\n 1 - default \n 2 - custom", 2);
-            if(input2.equals("1")) {
-                goose = gooseConsole.createAndSaveDefaultGoose(inp_name, session);
-                return goose;
-            } else if(input2.equals("2")) {
-                goose = gooseConsole.createAndSaveCustomGoose(inp_name, session);
-                return goose;
-            }
-
+            goose = gooseConsole.createDefaultOrCustomGoose(session);
+            return goose;
         } else if(input1.equals("2") && gooseConsole.chekIfThereAreGooseToChoose(session)) {
             System.out.println("There are no goose to choose. Please create one.");
-            goose = gooseConsole.createNewGooseByUser(session);
+            goose = gooseConsole.createDefaultOrCustomGoose(session);
             return goose;
         } else {
             goose = gooseConsole.createNewGooseByUser(session);
             return goose;
         }
-        return goose;
+
     }
 
 
@@ -77,16 +63,17 @@ public class MainConsole extends BaseConsole {
             if (input.equals("1")) {
                 return new FeedingAction(foodConsole.chooseFood());
             } else if (input.equals("2")) {
-
+                return new WashingAction(detergentConsole.chooseDetergent());
             } else if (input.equals("3")) {
-
+                return new InteractingAction(activityConsole.chooseActivity());
             } else if (input.equals("4")) {
                 return hatConsole.chooseHatAction(goose, session, gooseConsole);
             } else if (input.equals("5")) {
-                System.out.println(goose.toString());
+                System.out.println(goose.toString()); //return action and in gooseService apply some console to print
             } else if (input.equals("6")) {
                 return new WorkAction(workConsole.playWorkGame(goose.getGooseCoins()));
             } else if (input.equals("7")) {
+                goose.updateCharacteristics();
                 gooseConsole.saveGooseChangesToBd(goose);
                 System.exit(0);
             }

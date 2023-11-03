@@ -1,9 +1,6 @@
 package com.goose.services;
 
-import com.goose.concole.work.actions.Action;
-import com.goose.concole.work.actions.FeedingAction;
-import com.goose.concole.work.actions.WearingHatAction;
-import com.goose.concole.work.actions.WorkAction;
+import com.goose.concole.work.actions.*;
 import com.goose.models.Food;
 import com.goose.models.Goose;
 
@@ -15,14 +12,15 @@ public class GooseService {
     }
 
     public void doAction(Action action, Goose goose) throws SQLException {
-        Class actionClass = action.getClass();
+        Class<?> actionClass = action.getClass();
+        goose.updateCharacteristics();
 
         if (actionClass == FeedingAction.class) {
             goose.feedGoose(((FeedingAction) action).getFood());
-        } else if (actionClass == FeedingAction.class) {
-
-        } else if (actionClass == FeedingAction.class) {
-
+        } else if (actionClass == WashingAction.class) {
+            goose.washGoose(((WashingAction) action).getDetergent());
+        } else if (actionClass == InteractingAction.class) {
+            goose.interactWithGoose(((InteractingAction) action).getActivity());
         } else if (actionClass == WearingHatAction.class) {
             goose.wearHat(((WearingHatAction) action).getHat());
         } else if (actionClass == WorkAction.class) {

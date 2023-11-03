@@ -24,6 +24,4 @@ public class FoodsInfo {
         return FoodDao.getFoodDao().getFoods();
     }
 
-
-
 }

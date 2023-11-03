@@ -90,13 +90,31 @@ public class Goose {
                 "\n health:" + currentHealth + "/" + maxHealth;
     }
 
-    public void feedGoose(Food food) {
+
+    public void feedGoose(Food food) {           //one method (food... implements Thing)
         int newCurrentHunger = currentHunger + food.getNutrition();
         if (newCurrentHunger > maxHunger)
             newCurrentHunger = maxHunger;
         currentHunger = newCurrentHunger;
-        //update?
         System.out.println("Goose was fed with " + food.getName() + ". \n A description: " + toString());
+    }
+
+
+    public void washGoose(Detergent detergent) {
+        int newCurrentHygiene = currentHygiene + detergent.getWashingLevel();
+        if (newCurrentHygiene > maxHygiene)
+            newCurrentHygiene = maxHygiene;
+        currentHygiene = newCurrentHygiene;
+        System.out.println("Goose was washed with " + detergent.getName() + ". \n A description: " + toString());
+    }
+
+
+    public void interactWithGoose(Activity activity) {
+        int newCurrentSatisfaction = currentSatisfaction + activity.getSatisfaction();
+        if (newCurrentSatisfaction > maxSatisfaction)
+            newCurrentSatisfaction = maxSatisfaction;
+        currentSatisfaction = newCurrentSatisfaction;
+        System.out.println("Goose and you were busy with " + activity.getName() + ". \n A description: " + toString());
     }
 
 

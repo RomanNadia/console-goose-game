@@ -39,7 +39,23 @@ public class GooseConsole extends BaseConsole {
     }
 
 
-    public Goose createAndSaveDefaultGoose(String inp_name, Sessions session) throws SQLException, ClassNotFoundException {
+    public Goose createDefaultOrCustomGoose(Sessions session) throws SQLException, ClassNotFoundException {
+        String inp_name = getCorrectNewGooseName("Enter goose name", session);
+        Goose goose;
+
+        String input2 = getCorrectAction("Happy user, do you want default characteristics or custom: " +
+                "\n 1 - default \n 2 - custom", 2);
+        if(input2.equals("1")) {
+            goose = createAndSaveDefaultGoose(inp_name, session);
+            return goose;
+        } else {
+            goose = createAndSaveCustomGoose(inp_name, session);
+            return goose;
+        }
+    }
+
+
+    private Goose createAndSaveDefaultGoose(String inp_name, Sessions session) throws SQLException, ClassNotFoundException {
         Goose goose = new Goose(inp_name, AplicationConfig.MAX_HUNGER, AplicationConfig.MAX_HUNGER, AplicationConfig.MAX_HYGIENE,
                 AplicationConfig.MAX_HYGIENE, AplicationConfig.MAX_SATISFACTION, AplicationConfig.MAX_SATISFACTION,
                 AplicationConfig.MAX_HEALTH, AplicationConfig.MAX_HEALTH, session);
@@ -51,7 +67,7 @@ public class GooseConsole extends BaseConsole {
     }
 
 
-    public Goose createAndSaveCustomGoose(String inp_name, Sessions session) throws SQLException, ClassNotFoundException {
+    private Goose createAndSaveCustomGoose(String inp_name, Sessions session) throws SQLException, ClassNotFoundException {
         System.out.println("Enter maximum of hunger: ");
         String custom_max_hunger = scanner.nextLine();
         System.out.println("Enter maximum of hygiene: ");

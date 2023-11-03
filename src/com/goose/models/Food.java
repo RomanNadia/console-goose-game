@@ -1,12 +1,5 @@
 package com.goose.models;
 
-import com.goose.conection.bd.dao.FoodDao;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class Food {
     private String name;
     private int nutrition;

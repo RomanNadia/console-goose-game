@@ -1,29 +1,38 @@
 package com.goose.conection.bd.dao;
 
-import com.goose.conection.bd.ConectionCreator;
+import com.goose.models.Detergent;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.HashMap;
 
-public class DetergentDao {
-    private Connection connection;
+public class DetergentDao extends Dao {
+    private static DetergentDao detergentDao;
 
-    public DetergentDao() throws SQLException, ClassNotFoundException {
-        this.connection = ConectionCreator.getConnection();;
+    private DetergentDao() throws SQLException, ClassNotFoundException {
     }
 
-    public ResultSet getDetergent() throws SQLException {
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT id, detergentName FROM detergent");
-        return rs;
+    public static synchronized DetergentDao getDetergentDao() throws SQLException, ClassNotFoundException {
+
+        if (detergentDao == null)
+            detergentDao = new DetergentDao();
+
+        return detergentDao;
     }
 
-    public int getNutritionById(String id) throws SQLException {
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT washingLevel FROM detergent WHERE id = " + id);
-        int nutrition = rs.getInt("washingLevel");
-        return nutrition;
+
+    public HashMap<String, Detergent> getDetergents() throws SQLException {
+        ResultSet rs = executeQuery("SELECT id, detergentName, washingLevel FROM detergent");
+        HashMap<String, Detergent> detergents = new HashMap<String, Detergent>();
+
+        while (rs.next()) {
+            String id = rs.getString("id");
+            String detergentName = rs.getString("detergentName");
+            int washingLevel = rs.getInt("washingLevel");
+            detergents.put(id, new Detergent(detergentName, washingLevel));
+        }
+
+        return detergents;
     }
+
 }
