@@ -23,6 +23,8 @@ public class GooseService {
             goose.interactWithGoose(((InteractingAction) action).getActivity());
         } else if (actionClass == WearingHatAction.class) {
             goose.wearHat(((WearingHatAction) action).getHat());
+        } else if (actionClass == CheckAction.class) {
+            System.out.println(goose);
         } else if (actionClass == WorkAction.class) {
             goose.setGooseCoins(((WorkAction) action).getNewGooseCoins());
         }

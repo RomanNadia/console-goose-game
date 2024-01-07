@@ -91,7 +91,7 @@ public class Goose {
     }
 
 
-    public void feedGoose(Food food) {           //one method (food... implements Thing)
+    public void feedGoose(Food food) {
         int newCurrentHunger = currentHunger + food.getNutrition();
         if (newCurrentHunger > maxHunger)
             newCurrentHunger = maxHunger;
@@ -129,8 +129,12 @@ public class Goose {
 
 
     public void updateCharacteristics() {
-        starve();
-        //gigiene satisfaction
+        Date date = new Date();
+        long timeMilliNow = date.getTime();
+        currentHunger = reduceCharacteristic(currentHunger, timeMilliNow);
+        currentHygiene = reduceCharacteristic(currentHygiene, timeMilliNow);
+        currentSatisfaction = reduceCharacteristic(currentSatisfaction, timeMilliNow);
+        lastUpdateTime = timeMilliNow;
     }
 
     public String getName() {
@@ -245,16 +249,28 @@ public class Goose {
         this.gooseId = gooseId;
     }
 
-    private void starve() {
-        Date date = new Date();
-        long timeMilliNow = date.getTime();
-        currentHunger = (int)((long)currentHunger - (((timeMilliNow - lastUpdateTime)/10000) * 5));  //double
-        if(currentHunger <= 0) {
-            currentHunger = 0;
+
+//    private void starve() {
+//        Date date = new Date();
+//        long timeMilliNow = date.getTime();
+//        currentHunger = (int)((long)currentHunger - (((timeMilliNow - lastUpdateTime)/10000) * 5));  //double
+//        if(currentHunger <= 0) {
+//            currentHunger = 0;
+//            //shrink health
+//        }
+//        lastUpdateTime = timeMilliNow;
+//    }
+
+
+    private int reduceCharacteristic(int currentCharacteristic, long timeMilliNow) {
+        int newCurrentCharacteristic = (int)((long)currentCharacteristic - (((timeMilliNow - lastUpdateTime)/10000) * 5));
+        if(newCurrentCharacteristic <= 0) {
+            newCurrentCharacteristic = 0;
             //shrink health
         }
-        lastUpdateTime = timeMilliNow;
+        return newCurrentCharacteristic;
     }
+
 
     private void takeOffHat() {
         maxHunger = maxHunger - currentHat.getNutrition();

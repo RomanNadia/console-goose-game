@@ -69,7 +69,7 @@ public class MainConsole extends BaseConsole {
             } else if (input.equals("4")) {
                 return hatConsole.chooseHatAction(goose, session, gooseConsole);
             } else if (input.equals("5")) {
-                System.out.println(goose.toString()); //return action and in gooseService apply some console to print
+                 return new CheckAction();
             } else if (input.equals("6")) {
                 return new WorkAction(workConsole.playWorkGame(goose.getGooseCoins()));
             } else if (input.equals("7")) {
