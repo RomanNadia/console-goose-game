@@ -11,8 +11,8 @@ import java.util.Map;
 public class HatsInfo {
 
     private static HashMap<String, Hat> availableHats;
-    private static HashMap<String, Hat> availableHatsToBay;          //available to bay
-    //maybe available hats
+    private static HashMap<String, Hat> availableHatsToBay;
+
 
     public static synchronized HashMap<String, Hat> getAvailableHats(int gooseId)
             throws SQLException, ClassNotFoundException {

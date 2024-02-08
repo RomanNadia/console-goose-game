@@ -250,23 +250,10 @@ public class Goose {
     }
 
 
-//    private void starve() {
-//        Date date = new Date();
-//        long timeMilliNow = date.getTime();
-//        currentHunger = (int)((long)currentHunger - (((timeMilliNow - lastUpdateTime)/10000) * 5));  //double
-//        if(currentHunger <= 0) {
-//            currentHunger = 0;
-//            //shrink health
-//        }
-//        lastUpdateTime = timeMilliNow;
-//    }
-
-
     private int reduceCharacteristic(int currentCharacteristic, long timeMilliNow) {
         int newCurrentCharacteristic = (int)((long)currentCharacteristic - (((timeMilliNow - lastUpdateTime)/10000) * 5));
         if(newCurrentCharacteristic <= 0) {
             newCurrentCharacteristic = 0;
-            //shrink health
         }
         return newCurrentCharacteristic;
     }

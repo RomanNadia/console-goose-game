@@ -69,13 +69,6 @@ public class HatDao extends Dao {
     }
 
 
-//    public Hat getHatById(String id) throws SQLException {
-//        ResultSet rs = executeQuery("SELECT * FROM hat WHERE id = " + id);
-//        return new Hat(rs.getString("hatName"), rs.getInt("hungerBonus"),
-//                rs.getInt("hygieneBonus"), rs.getInt("satisfactionBonus"));
-//    }
-
-
     public void insertHat(Hat hat, Sessions session) throws SQLException {
         upsert("INSERT INTO hat (hatName, hungerBonus, hygieneBonus, satisfactionBonus, sessionName) VALUE ('"
                 + hat.getName() + "', " + hat.getNutrition() + ", " +  hat.getHygieneBonus() + ", "

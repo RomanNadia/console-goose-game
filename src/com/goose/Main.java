@@ -20,7 +20,6 @@ public class Main {
         GooseService gooseService = new GooseService();
 
         Date date = new Date();
-//        long timeMilli = date.getTime();
 
         goose.setLastUpdateTime(date.getTime());
 
@@ -28,9 +27,6 @@ public class Main {
 
 
         while (continueProgram) {
-//            timeMilli = date.getTime();
-//            goose.updateCharacteristics(timeMilli);
-            //where update (in console)?
             goose.updateCharacteristics();
             Action action = console.chooseAction(goose, session);
             gooseService.doAction(action, goose);
