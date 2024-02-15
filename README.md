@@ -1,5 +1,4 @@
 ## Project introduction
-#Console goose game
 This is tamagotchi-like console Java application with connection to MySQL database, where user can create a goose and interact with it.
 	
 ## Technologies
